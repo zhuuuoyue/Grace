@@ -1,0 +1,28 @@
+{
+    "modules": [
+        {
+            "title": "Git",
+            "tooltip": "",
+            "commands": [
+                {
+                    "command_id": "cmd_edit_repositories",
+                    "title": "Edit Repositories",
+                    "icon": "",
+                    "tooltip": ""
+                },
+                {
+                    "command_id": "cmd_edit_branches",
+                    "title": "Edit Branches",
+                    "icon": "",
+                    "tooltip": ""
+                },
+                {
+                    "command_id": "cmd_update_branch",
+                    "title": "Update Branch",
+                    "icon": "",
+                    "tooltip": ""
+                }
+            ]
+        }
+    ]
+}
