@@ -6,7 +6,6 @@ from typing import Union
 from sqlalchemy import create_engine, Engine
 
 from db.base import Base
-from db.git import *
 
 
 __engine: Union[Engine, None] = None
