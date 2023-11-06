@@ -1,20 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from sys import argv
-from json import load
+import os
+import sys
+import json
 from typing import Sequence, List
 
-from ui import Application, MainWindow, MenuData, ActionData
-
-
-def register_commands():
-    pass
+from ui import Application, MainWindow, MenuData, ActionData, register_commands
+from db import initialize
 
 
 def load_menus() -> Sequence[MenuData]:
     result: List[MenuData] = list()
     with open('ui.json') as fp:
-        data = load(fp)
+        data = json.load(fp)
         modules = data['modules']
         for module in modules:
             commands = module['commands']
@@ -33,12 +31,14 @@ def load_menus() -> Sequence[MenuData]:
 
 
 if __name__ == '__main__':
+    initialize(f'{os.getcwd()}\\data.db')
     menus = load_menus()
-    if len(menus) != 0:
-        register_commands()
+    register_commands()
 
-        app = Application(argv)
-        win = MainWindow(menus)
-        win.move(0, 0)
-        win.show()
-        app.exec()
+    app = Application(sys.argv)
+    win = MainWindow(menus)
+    win.move(0, 0)
+    win.show()
+    exit_code = app.exec()
+
+    sys.exit(exit_code)
