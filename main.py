@@ -6,7 +6,9 @@ import json
 from typing import Sequence, List
 
 from ui import Application, MainWindow, MenuData, ActionData, register_commands
-from db import initialize
+from context import Context
+import db
+import exts
 
 
 def load_menus() -> Sequence[MenuData]:
@@ -31,14 +33,21 @@ def load_menus() -> Sequence[MenuData]:
 
 
 if __name__ == '__main__':
-    initialize(f'{os.getcwd()}\\data.db')
+    ctx = Context()
+    db.initialize(f'{os.getcwd()}\\data.db')
     menus = load_menus()
     register_commands()
 
     app = Application(sys.argv)
+
     win = MainWindow(menus)
     win.move(0, 0)
     win.show()
+
+    ctx.app = app
+    ctx.main_window = win
+    exts.initialize(ctx)
+
     exit_code = app.exec()
 
     sys.exit(exit_code)
