@@ -83,7 +83,7 @@ def initialize(ctx: Context):
         try:
             module_or_package = import_module(f'{__package__}.{loading.name}')
             try:
-                module_or_package.initialize()
+                module_or_package.initialize(ctx)
             except AttributeError as e:
                 loading.error = e
         except ModuleNotFoundError as e:

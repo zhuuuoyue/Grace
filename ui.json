@@ -1,7 +1,7 @@
 {
     "modules": [
         {
-            "title": "Git",
+            "title": "VCS",
             "tooltip": "",
             "commands": [
                 {
@@ -19,6 +19,30 @@
                 {
                     "command_id": "cmd_update_branch",
                     "title": "Update Branch",
+                    "icon": "",
+                    "tooltip": ""
+                }
+            ]
+        },
+        {
+            "title": "Create",
+            "tooltip": "",
+            "commands": [
+                {
+                    "command_id": "cmd_edit_template",
+                    "title": "Edit Template",
+                    "icon": "",
+                    "tooltip": ""
+                },
+                {
+                    "command_id": "cmd_edit_creation_solution",
+                    "title": "Edit Creation Solution",
+                    "icon": "",
+                    "tooltip": ""
+                },
+                {
+                    "command_id": "cmd_create_using_creation_solution",
+                    "title": "Create",
                     "icon": "",
                     "tooltip": ""
                 }

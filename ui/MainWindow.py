@@ -59,6 +59,16 @@ class MainWindow(QMainWindow):
                 action.clicked.connect(self.__on_clicked)
                 menu.addAction(action)
 
+    def add_action(self, menu: str, action: Action):
+        if not isinstance(menu, str) or not isinstance(action, Action):
+            return
+        mb = self.menuBar()
+        children = mb.children()
+        for child in children:
+            if isinstance(child, QMenu) and child.title() == menu:
+                action.clicked.connect(self.__on_clicked)
+                child.addAction(action)
+
     @Slot(str)
     def __on_clicked(self, command_id: str):
         execute_command(command_id)

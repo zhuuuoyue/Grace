@@ -2,7 +2,7 @@
 
 from command import register_command
 from .Application import Application
-from .MainWindow import MainWindow, MenuData, ActionData
+from .MainWindow import MainWindow, MenuData, ActionData, Action
 from .vcs import *
 
 
