@@ -40,6 +40,14 @@ class CleanDirectories(object):
                 child_path = os.path.join(dir_path, child)
                 if os.path.isdir(child_path):
                     shutil.rmtree(child_path)
+                    if os.path.isdir(child_path):
+                        result.failed += 1
+                    else:
+                        result.succeeded += 1
                 elif os.path.isfile(child_path):
                     os.remove(child_path)
+                    if os.path.isfile(child_path):
+                        result.failed += 1
+                    else:
+                        result.succeeded += 1
         return result
