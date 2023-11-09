@@ -6,7 +6,7 @@ import json
 from typing import Sequence, List
 
 from ui import Application, MainWindow, MenuData, ActionData, register_commands
-from context import Context
+import context
 import db
 import exts
 
@@ -33,8 +33,9 @@ def load_menus() -> Sequence[MenuData]:
 
 
 if __name__ == '__main__':
-    ctx = Context()
-    db.initialize(f'{os.getcwd()}\\data.db')
+    context.initialize(os.getcwd())
+    ctx = context.get_context()
+    db.initialize(ctx.data_file_path)
     menus = load_menus()
     register_commands()
 

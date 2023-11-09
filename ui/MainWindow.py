@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Union, List
 
 from PySide6.QtCore import Qt, QObject, Signal, Slot
 from PySide6.QtWidgets import QMainWindow, QWidget, QMenuBar, QMenu
-from PySide6.QtGui import QAction
+from PySide6.QtGui import QAction, QIcon
 
 from command import execute_command
+
+from .basic.utils import get_image_path
 
 
 class ActionData(object):
@@ -50,24 +52,35 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Grace - Make your programming graceful')
         self.setFixedHeight(22)
         self.setMinimumWidth(512)
+        self.setWindowIcon(QIcon(get_image_path('cat-48')))
 
-        menu_bar: QMenuBar = self.menuBar()
         for menu_data in menus:
-            menu: QMenu = menu_bar.addMenu(menu_data.title)
+            menu = self.get_menu(menu_data.title)
+            if menu is None:
+                continue
             for action_data in menu_data.actions:
-                action = Action(action_data.command_id, action_data.title, menu)
-                action.clicked.connect(self.__on_clicked)
-                menu.addAction(action)
+                self.add_action(menu_data.title, action_data)
 
-    def add_action(self, menu: str, action: Action):
-        if not isinstance(menu, str) or not isinstance(action, Action):
+    def get_menu(self, text: str) -> Union[QMenu, None]:
+        if not isinstance(text, str) or text == str():
+            return None
+        menu_bar: QMenuBar = self.menuBar()
+        menus: List[QObject] = menu_bar.children()
+        for menu in menus:
+            if isinstance(menu, QMenu) and menu.title() == text:
+                return menu
+        menu = menu_bar.addMenu(text)
+        return menu
+
+    def add_action(self, menu: str, action_data: ActionData):
+        menu = self.get_menu(menu)
+        if menu is None:
             return
-        mb = self.menuBar()
-        children = mb.children()
-        for child in children:
-            if isinstance(child, QMenu) and child.title() == menu:
-                action.clicked.connect(self.__on_clicked)
-                child.addAction(action)
+        action = Action(action_data.command_id, action_data.title, menu)
+        action.setIcon(QIcon(get_image_path(action_data.icon)))
+        action.setToolTip(action_data.tooltip)
+        action.clicked.connect(self.__on_clicked)
+        menu.addAction(action)
 
     @Slot(str)
     def __on_clicked(self, command_id: str):

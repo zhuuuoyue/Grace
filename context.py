@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 from typing import Union
 
 from PySide6.QtWidgets import QApplication, QMainWindow
@@ -10,9 +11,28 @@ class Context(object):
     def __init__(self, *args, **kwargs):
         self.__app: Union[QApplication, None] = None
         self.__main_window: Union[QMainWindow, None] = None
+        self.__root_directory: str = ''
 
+        self.root_directory = kwargs.get('root_directory')
         self.app = kwargs.get('main_window')
         self.main_window = kwargs.get('main_window')
+
+    @property
+    def root_directory(self) -> str:
+        return self.__root_directory
+
+    @root_directory.setter
+    def root_directory(self, value: str):
+        if isinstance(value, str):
+            self.__root_directory = value
+
+    @property
+    def image_directory(self) -> str:
+        return os.path.join(self.root_directory, 'images')
+
+    @property
+    def data_file_path(self) -> str:
+        return os.path.join(self.root_directory, 'data.db')
 
     @property
     def app(self) -> Union[QApplication, None]:
@@ -31,3 +51,16 @@ class Context(object):
     def main_window(self, value: QMainWindow):
         if isinstance(value, QMainWindow):
             self.__main_window = value
+
+
+__context: Union[Context, None] = None
+
+
+def initialize(root_directory: str):
+    global __context
+    if __context is None:
+        __context = Context(root_directory=root_directory)
+
+
+def get_context() -> Context:
+    return __context

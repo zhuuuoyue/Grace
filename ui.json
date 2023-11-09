@@ -7,19 +7,19 @@
                 {
                     "command_id": "cmd_edit_repositories",
                     "title": "Edit Repositories",
-                    "icon": "",
+                    "icon": "repository",
                     "tooltip": ""
                 },
                 {
                     "command_id": "cmd_edit_branches",
                     "title": "Edit Branches",
-                    "icon": "",
+                    "icon": "branch",
                     "tooltip": ""
                 },
                 {
                     "command_id": "cmd_update_branch",
                     "title": "Update Branch",
-                    "icon": "",
+                    "icon": "download",
                     "tooltip": ""
                 }
             ]
@@ -31,19 +31,19 @@
                 {
                     "command_id": "cmd_edit_template",
                     "title": "Edit Template",
-                    "icon": "",
+                    "icon": "document",
                     "tooltip": ""
                 },
                 {
                     "command_id": "cmd_edit_creation_solution",
                     "title": "Edit Creation Solution",
-                    "icon": "",
+                    "icon": "documents",
                     "tooltip": ""
                 },
                 {
                     "command_id": "cmd_create_using_creation_solution",
                     "title": "Create",
-                    "icon": "",
+                    "icon": "create-documents",
                     "tooltip": ""
                 }
             ]
