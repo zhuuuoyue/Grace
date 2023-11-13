@@ -17,5 +17,5 @@ def initialize(ctx: Context):
     if isinstance(win, MainWindow):
         win.add_action(menu, ActionData(command_id='cmd_clean_log_files', title='Clean Log Files', icon='clean',
                                         tooltip='Clean log files under architecture and structure software package'))
-        win.add_action(menu, ActionData(command_id='cmd_switch_environment', title='Switch Environment',
+        win.add_action(menu, ActionData(command_id='cmd_switch_environment', title='Switch Environment', icon='chain',
                                         tooltip='Switch runtime environment'))
