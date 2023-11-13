@@ -21,11 +21,12 @@ def create_row_title(text: str, width: Optional[int] = None, height: Optional[in
 
 
 def create_row_layout(
-        widget: Union[QWidget, QLayout],
+        widget: Optional[Union[QWidget, QLayout]] = None,
         title: Optional[QLabel] = None,
         title_width: Optional[int] = 80,
         append_spacer: Optional[bool] = False,
-        spacing: Optional[int] = 0
+        spacing: Optional[int] = 0,
+        widgets: Optional[Sequence[Union[QWidget, QLayout, QSpacerItem]]] = None
 ) -> QHBoxLayout:
     layout = QHBoxLayout()
     layout.setSpacing(spacing)
@@ -34,10 +35,19 @@ def create_row_layout(
     else:
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(title)
-    if isinstance(widget, QWidget):
-        layout.addWidget(widget)
-    elif isinstance(widget, QLayout):
-        layout.addLayout(widget)
+    if widget is not None:
+        if isinstance(widget, QWidget):
+            layout.addWidget(widget)
+        elif isinstance(widget, QLayout):
+            layout.addLayout(widget)
+    elif widgets is not None:
+        for child_widget in widgets:
+            if isinstance(child_widget, QWidget):
+                layout.addWidget(child_widget)
+            elif isinstance(child_widget, QLayout):
+                layout.addLayout(child_widget)
+            elif isinstance(child_widget, QSpacerItem):
+                layout.addSpacerItem(child_widget)
     if append_spacer:
         layout.addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding))
     return layout
