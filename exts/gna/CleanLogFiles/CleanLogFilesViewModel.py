@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import Optional, List, Any
+from typing import Any, List, Optional
 
-from PySide6.QtCore import QObject, Qt, Slot, Signal, QSignalBlocker
-from PySide6.QtWidgets import QWidget, QDialog, QComboBox, QListWidgetItem, QListWidget, QMessageBox
+from PySide6.QtCore import QObject, Signal, Slot
 
-from common import is_string_list, are_same_string_lists, are_same_lists, is_list_of, FilterX
-from command import ICommand
-from ui.basic import form, create_no_focus_button
-from .CleanDirectories import CleanDirectories
+from common import are_same_string_lists, are_same_lists, is_string_list, is_list_of, FilterX
 
 
 class DirectoryInformation(object):
@@ -30,7 +26,7 @@ class IsDirectoryInformation(FilterX):
         return isinstance(obj, DirectoryInformation)
 
 
-class _VM(QObject):
+class CleanLogFilesViewModel(QObject):
 
     repositories_changed = Signal()
     repository_changed = Signal(int)
@@ -197,132 +193,3 @@ class _VM(QObject):
     @Slot(int)
     def on_clean_list_item_check_state_changed(self, index: int):
         self.update_clean_button_enabled_state()
-
-
-class _UI(object):
-
-    def __init__(self, dialog: QDialog, vm: _VM):
-        dialog.setFixedSize(600, 200)
-        dialog.setWindowTitle('Clean Log Files')
-
-        self.repository_title = form.create_row_title('Repository', width=100)
-        self.repository_selector = QComboBox()
-        self.update_repositories(vm.repositories, vm.repository)
-        self.repository_row = form.create_row_layout(self.repository_selector, title=self.repository_title)
-
-        self.configuration_title = form.create_row_title('Configuration', width=100)
-        self.configuration_selector = QComboBox()
-        self.update_configurations(vm.configurations, vm.configuration)
-        self.configuration_row = form.create_row_layout(self.configuration_selector, title=self.configuration_title)
-
-        self.clean_list_title = form.create_row_title('Clean List', width=100)
-        self.clean_list = QListWidget()
-        self.update_clean_list(vm.directories)
-        self.clean_list_row = form.create_row_layout(self.clean_list, title=self.clean_list_title)
-        self.clean_list_row.setAlignment(self.clean_list_title, Qt.AlignmentFlag.AlignTop)
-
-        self.clean_button = create_no_focus_button(vm.clean_button_text)
-        self.clean_button.setEnabled(vm.clean_button_enabled)
-
-        self.layout = form.create_column_layout([
-            self.repository_row, self.configuration_row, self.clean_list_row, self.clean_button
-        ])
-        self.layout.setContentsMargins(8, 8, 8, 8)
-
-        dialog.setLayout(self.layout)
-        dialog.setStyleSheet('QWidget { font-family: \'Consolas\'; }')
-
-    def update_repositories(self, repositories: List[str], current_index: int):
-        blocker = QSignalBlocker(self.repository_selector)
-        self.repository_selector.clear()
-        self.repository_selector.addItems(repositories)
-        self.repository_selector.setCurrentIndex(current_index)
-        blocker.unblock()
-
-    def update_configurations(self, configurations: List[str], current_index: int):
-        blocker = QSignalBlocker(self.configuration_selector)
-        self.configuration_selector.clear()
-        self.configuration_selector.addItems(configurations)
-        self.configuration_selector.setCurrentIndex(current_index)
-        blocker.unblock()
-
-    def update_clean_list(self, dirs: List[DirectoryInformation]):
-        blocker = QSignalBlocker(self.clean_list)
-        self.clean_list.clear()
-        for item_dir in dirs:
-            item = QListWidgetItem(item_dir.path)
-            item.setCheckState(Qt.CheckState.Checked if item_dir.checked else Qt.CheckState.Unchecked)
-            self.clean_list.addItem(item)
-        blocker.unblock()
-
-
-class CleanLogFilesDialog(QDialog):
-
-    def __init__(self, parent: Optional[QWidget] = None):
-        super().__init__(parent)
-        self.__vm = _VM(self)
-        self.__ui = _UI(self, self.__vm)
-
-        self.__vm.repositories_changed.connect(self.__on_vm_repositories_changed)
-        self.__vm.repository_changed.connect(self.__ui.repository_selector.setCurrentIndex)
-        self.__vm.configurations_changed.connect(self.__on_vm_configurations_changed)
-        self.__vm.configuration_changed.connect(self.__ui.configuration_selector.setCurrentIndex)
-        self.__vm.directories_changed.connect(self.__on_vm_clean_list_changed)
-        self.__vm.clean_button_enabled_changed.connect(self.__ui.clean_button.setEnabled)
-        self.__vm.clean_button_text_changed.connect(
-            self.__on_vm_clean_button_text_changed, Qt.ConnectionType.DirectConnection)
-
-        self.__ui.repository_selector.currentIndexChanged.connect(self.__vm.set_repository)
-        self.__ui.configuration_selector.currentIndexChanged.connect(self.__vm.set_configuration)
-        self.__ui.clean_list.itemChanged.connect(self.__on_ui_clean_list_item_changed)
-        self.__ui.clean_button.clicked.connect(self.__on_ui_clean_button_clicked)
-
-        self.__vm.initialize()
-
-    @Slot()
-    def __on_vm_repositories_changed(self):
-        self.__ui.update_repositories(self.__vm.repositories, self.__vm.repository)
-
-    @Slot()
-    def __on_vm_configurations_changed(self):
-        self.__ui.update_configurations(self.__vm.configurations, self.__vm.configuration)
-
-    @Slot()
-    def __on_vm_clean_list_changed(self):
-        self.__ui.update_clean_list(self.__vm.directories)
-
-    @Slot(str)
-    def __on_vm_clean_button_text_changed(self, text: str):
-        self.__ui.clean_button.setText(text)
-        self.__ui.clean_button.repaint()
-
-    @Slot(QListWidgetItem)
-    def __on_ui_clean_list_item_changed(self, item: QListWidgetItem):
-        if not isinstance(item, QListWidgetItem):
-            return
-        index = self.__ui.clean_list.indexFromItem(item).row()
-        checked = item.checkState() == Qt.CheckState.Checked
-        self.__vm.set_directory_check_state(index, checked)
-
-    @Slot()
-    def __on_ui_clean_button_clicked(self):
-        self.__vm.start_cleaning()
-        dir_info_list = self.__vm.directories
-        clean_list: List[str] = list()
-        for dir_info in dir_info_list:
-            if dir_info.checked:
-                clean_list.append(dir_info.path)
-        cleaner = CleanDirectories(clean_list)
-        result = cleaner.run()
-        QMessageBox.information(self, 'Clean Log Files', f'Succeeded: {result.succeeded}\nFailed: {result.failed}')
-        self.__vm.end_cleaning()
-
-
-class CleanLogFilesCommand(ICommand):
-
-    def __init__(self):
-        pass
-
-    def exec(self, *args, **kwargs):
-        dialog = CleanLogFilesDialog()
-        dialog.exec()
