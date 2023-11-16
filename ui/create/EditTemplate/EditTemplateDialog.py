@@ -7,6 +7,7 @@ from PySide6.QtWidgets import QDialog, QWidget
 
 from .EditTemplateView import EditTemplateView
 from .EditTemplateViewModel import EditTemplateViewModel
+from .TemplateEditor import TemplateEditor
 
 
 class EditTemplateDialog(QDialog):
@@ -38,7 +39,11 @@ class EditTemplateDialog(QDialog):
 
     @Slot()
     def __on_new_button_clicked(self):
-        print('new')
+        editor = TemplateEditor(existing_template_names={'cpp', 'python'}, parent=self)
+        if 1 == editor.exec():
+            new_template = editor.get_data()
+            print('will add template')
+            print(new_template)
 
     @Slot()
     def __on_remove_button_clicked(self):
@@ -46,7 +51,11 @@ class EditTemplateDialog(QDialog):
 
     @Slot()
     def __on_edit_button_clicked(self):
-        print('edit')
+        editor = TemplateEditor(existing_template_names={'cpp', 'python'}, parent=self)
+        if 1 == editor.exec():
+            modified_template = editor.get_data()
+            print('will modify template')
+            print(modified_template)
 
     @Slot()
     def __on_copy_button_clicked(self):
