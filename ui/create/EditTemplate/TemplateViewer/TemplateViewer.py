@@ -4,7 +4,7 @@ from typing import Optional
 
 from PySide6.QtWidgets import QWidget, QDialog
 
-from ui.create.EditTemplate.TemplateData import TemplateData
+from tasks.create import TemplateData
 
 from .TemplateViewerView import TemplateViewerView
 

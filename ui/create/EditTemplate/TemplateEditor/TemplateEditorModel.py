@@ -4,7 +4,7 @@ from typing import Optional
 
 from PySide6.QtCore import QObject, Signal, Slot, Property
 
-from ui.create.EditTemplate.TemplateData import TemplateData
+from tasks.create import TemplateData
 
 
 class TemplateEditorModel(QObject):

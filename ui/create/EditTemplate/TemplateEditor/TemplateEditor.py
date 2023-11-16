@@ -5,7 +5,7 @@ from typing import Optional, Set
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QDialog, QWidget
 
-from ui.create.EditTemplate.TemplateData import TemplateData
+from tasks.create import TemplateData
 
 from .TemplateEditorViewModel import TemplateEditorViewModel
 from .TemplateEditorView import TemplateEditorView
