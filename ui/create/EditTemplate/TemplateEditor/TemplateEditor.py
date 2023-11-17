@@ -13,7 +13,8 @@ from .TemplateEditorView import TemplateEditorView
 
 class TemplateEditor(QDialog):
 
-    def __init__(self, existing_template_names: Set[str], data: Optional[TemplateData] = None,
+    def __init__(self, existing_template_names: Set[str],
+                 data: Optional[TemplateData] = None,
                  parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.vm = TemplateEditorViewModel(existing_template_names, self)

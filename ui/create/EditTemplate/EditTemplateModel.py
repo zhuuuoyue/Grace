@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Dict
+from typing import Optional, Dict, Union, Any
 
 from PySide6.QtCore import QObject, Signal, Property
+
+from tasks.create import EditTemplateTasks, TemplateData
 
 
 class EditTemplateModel(QObject):
@@ -23,9 +25,16 @@ class EditTemplateModel(QObject):
 
     data = Property(type(Dict[str, str]), fget=get_data, fset=set_data, notify=data_changed)
 
+    def get_content(self, name: str) -> Union[str, None]:
+        return None if name not in self.data else self.data[name]
+
     def initialize(self):
-        fake = {
-            "cpp": "hello c plus plus",
-            "python": "hello python"
-        }
-        self.data = fake
+        self.update()
+
+    def update(self):
+        templates = EditTemplateTasks.get_templates()
+        sorted_templates = sorted(templates, key=lambda item: item.name)
+        data: Dict[str, str] = dict()
+        for template in sorted_templates:
+            data[template.name] = template.content
+        self.data = data

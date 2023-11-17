@@ -121,6 +121,7 @@ class TemplateEditorViewModel(QObject):
 
     @Slot(str)
     def on_model_content_changed(self, content: str):
+        self.content_text = content
         result = re.findall(_PARAMETER_PATTERN, content)
         self.parameters_text = ', '.join(set(result))
 

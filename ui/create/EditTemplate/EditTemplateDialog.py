@@ -5,6 +5,8 @@ from typing import Optional
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QDialog, QWidget
 
+from tasks.create import EditTemplateTasks
+
 from .EditTemplateView import EditTemplateView
 from .EditTemplateViewModel import EditTemplateViewModel
 from .TemplateEditor import TemplateEditor
@@ -42,24 +44,41 @@ class EditTemplateDialog(QDialog):
         editor = TemplateEditor(existing_template_names={'cpp', 'python'}, parent=self)
         if 1 == editor.exec():
             new_template = editor.get_data()
-            print('will add template')
-            print(new_template)
+            EditTemplateTasks.add_template(new_template)
+            self.vm.model.update()
 
     @Slot()
     def __on_remove_button_clicked(self):
-        print('remove')
+        current_template = self.vm.get_current_template_data()
+        if current_template is not None:
+            EditTemplateTasks.delete_template(current_template.name)
+            self.vm.model.update()
 
     @Slot()
     def __on_edit_button_clicked(self):
-        editor = TemplateEditor(existing_template_names={'cpp', 'python'}, parent=self)
+        current_template_data = self.vm.get_current_template_data()
+        if current_template_data is None:
+            return
+
+        current_template_name = current_template_data.name
+        existing_template_names = EditTemplateTasks.get_template_names()
+        existing_template_names.remove(current_template_name)
+        editor = TemplateEditor(
+            existing_template_names=existing_template_names,
+            data=current_template_data,
+            parent=self
+        )
         if 1 == editor.exec():
             modified_template = editor.get_data()
-            print('will modify template')
-            print(modified_template)
+            EditTemplateTasks.update_template(current_template_name, modified_template)
+            self.vm.model.update()
 
     @Slot()
     def __on_copy_button_clicked(self):
-        print('copy')
+        source_template_data = self.vm.get_current_template_data()
+        if source_template_data is not None:
+            EditTemplateTasks.copy_and_insert_template(source_template_data)
+            self.vm.model.update()
 
     @Slot()
     def __on_export_button_clicked(self):
