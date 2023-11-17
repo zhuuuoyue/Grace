@@ -7,17 +7,17 @@ from PySide6.QtWidgets import QDialog, QWidget
 
 from tasks.create import EditTemplateTasks
 
-from .EditTemplateView import EditTemplateView
-from .EditTemplateViewModel import EditTemplateViewModel
-from .TemplateEditor import TemplateEditor
+from .EditTemplatesView import EditTemplatesView
+from .EditTemplatesViewModel import EditTemplatesViewModel
+from ui.create.TemplateEditor import TemplateEditor
 
 
-class EditTemplateDialog(QDialog):
+class EditTemplatesDialog(QDialog):
 
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
-        self.vm = EditTemplateViewModel(self)
-        self.ui = EditTemplateView(self, self.vm)
+        self.vm = EditTemplatesViewModel(self)
+        self.ui = EditTemplatesView(self, self.vm)
 
         self.ui.template_list.clicked.connect(self.vm.set_current_template_index)
         self.ui.new_button.clicked.connect(self.__on_new_button_clicked)

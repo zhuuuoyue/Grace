@@ -2,7 +2,7 @@
 
 from command import ICommand
 
-from .EditTemplateDialog import EditTemplateDialog
+from ui.create.EditTemplatesDialog.EditTemplatesDialog import EditTemplatesDialog
 
 
 class EditTemplateCommand(ICommand):
@@ -11,6 +11,6 @@ class EditTemplateCommand(ICommand):
         super().__init__()
 
     def exec(self, *args, **kwargs):
-        dialog = EditTemplateDialog()
+        dialog = EditTemplatesDialog()
         dialog.initialize()
         dialog.exec()

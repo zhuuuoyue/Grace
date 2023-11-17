@@ -6,10 +6,10 @@ from PySide6.QtCore import QObject, Property, Slot, Signal, QStringListModel, QM
 
 from tasks.create import TemplateData
 
-from .EditTemplateModel import EditTemplateModel
+from .EditTemplatesModel import EditTemplatesModel
 
 
-class EditTemplateViewModel(QObject):
+class EditTemplatesViewModel(QObject):
 
     new_button_enabled_changed = Signal(bool)
     remove_button_enabled_changed = Signal(bool)
@@ -24,7 +24,7 @@ class EditTemplateViewModel(QObject):
         super().__init__(parent)
 
         # model
-        self.__model: EditTemplateModel = EditTemplateModel(self)
+        self.__model: EditTemplatesModel = EditTemplatesModel(self)
         self.__template_list_model = QStringListModel(self)
 
         # view model
@@ -45,7 +45,7 @@ class EditTemplateViewModel(QObject):
     def create_index(self, row: Optional[int] = -1) -> QModelIndex:
         return self.__template_list_model.createIndex(row, 0)
 
-    def get_model(self) -> EditTemplateModel:
+    def get_model(self) -> EditTemplatesModel:
         return self.__model
 
     model = property(fget=get_model)
