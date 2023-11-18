@@ -107,5 +107,5 @@ def get_templates() -> Sequence[TemplateData]:
         templates = session.scalars(select(EntTemplate))
         result = list()
         for template in templates:
-            result.append(TemplateData(name=template.name, content=template.content))
+            result.append(TemplateData(id_value=template.id, name=template.name, content=template.content))
         return result
