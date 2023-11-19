@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import List
+from typing import List, Union
 
 from sqlalchemy.orm import Session
 
@@ -10,6 +10,7 @@ from db.create import EntEncoding, EntCreationDocument
 from .Encoding import Encoding
 from .TemplateData import TemplateData
 from .DocumentData import DocumentData
+from tasks.create import EditTemplateTasks
 
 
 def get_encodings() -> List[Encoding]:
@@ -54,3 +55,10 @@ def retrieve_documents() -> List[DocumentData]:
             )
             for searched_template in searched_templates
         ]
+
+
+def get_template_by_document_id(document_id: int) -> Union[TemplateData, None]:
+    with Session(get_engine()) as session:
+        document = session.query(EntCreationDocument).where(EntCreationDocument.id == document_id).first()
+        if document is not None:
+            return EditTemplateTasks.get_template_by_id(document.template_id)

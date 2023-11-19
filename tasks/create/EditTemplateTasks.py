@@ -109,3 +109,10 @@ def get_templates() -> Sequence[TemplateData]:
         for template in templates:
             result.append(TemplateData(id_value=template.id, name=template.name, content=template.content))
         return result
+
+
+def get_template_by_id(template_id: int) -> Union[TemplateData, None]:
+    with Session(get_engine()) as session:
+        template = session.query(EntCreationTemplate).where(EntCreationTemplate.id == template_id).first()
+        if template is not None:
+            return TemplateData(id_value=template.id, name=template.name, content=template.content)

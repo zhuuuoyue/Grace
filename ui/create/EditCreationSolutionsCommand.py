@@ -12,4 +12,5 @@ class EditCreationSolutionsCommand(ICommand):
 
     def exec(self, *args, **kwargs):
         dialog = EditCreationSolutionsDialog()
+        dialog.initialize()
         dialog.exec()

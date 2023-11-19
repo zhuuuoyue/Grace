@@ -164,6 +164,7 @@ class EditCreationTemplatesViewModel(QObject):
             for new_current_template_index, new_template_name in enumerate(new_template_name_list):
                 if new_template_name == old_current_template_name:
                     self.current_template_index = self.create_index(new_current_template_index)
+                    break
 
         if self.current_template_index.row() < 0 < len(new_template_name_list):
             self.current_template_index = self.create_index(0)
