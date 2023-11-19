@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QDialog, QWidget, QLabel, QListView, QGroupBox, QTextEdit, QHBoxLayout, QLineEdit, QSpacerItem, QSizePolicy
+from PySide6.QtWidgets import (
+    QDialog, QWidget, QLabel, QListView, QGroupBox, QLineEdit,
+    QHBoxLayout, QSpacerItem, QSizePolicy
+)
 
 from ui.basic import form, create_no_focus_tool_button, add_layout_children
+
+from ui.create.CreationTemplateViewer import CreationTemplateViewer
 
 
 def create_panel_title(text: str) -> QLabel:
@@ -100,7 +105,7 @@ class EditCreationSolutionsView(object):
         self.document_panel.setLayout(self.document_panel_layout)
 
         self.template_title = create_panel_title(r'Template Preview')
-        self.template_preview = QTextEdit()
+        self.template_preview = CreationTemplateViewer()
         self.template_panel_layout = form.create_column_layout(children=[self.template_title, self.template_preview])
 
         self.layout = QHBoxLayout()

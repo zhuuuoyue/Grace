@@ -2,18 +2,18 @@
 
 from typing import Optional
 
-from PySide6.QtWidgets import QWidget, QDialog
-
-from tasks.create import TemplateData
-
-from .CreationTemplateViewerView import CreationTemplateViewerView
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QWidget, QTextEdit
 
 
-class CreationTemplateViewer(QDialog):
+class CreationTemplateViewer(QTextEdit):
 
-    def __init__(self, data: TemplateData, parent: Optional[QWidget] = None):
-        super().__init__(parent)
-        self.ui = CreationTemplateViewerView(self)
-
-        self.setWindowTitle(data.name)
-        self.ui.editor.setText(data.content)
+    def __init__(self, text: Optional[str] = None, parent: Optional[QWidget] = None):
+        super().__init__(text, parent)
+        self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.setStyleSheet(
+            '''
+            font-family: 'Consolas';
+            font-size: 14px;
+            '''
+        )

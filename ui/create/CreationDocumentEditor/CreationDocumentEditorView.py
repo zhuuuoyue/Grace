@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from PySide6.QtWidgets import QDialog, QLineEdit, QComboBox, QTextEdit, QSpacerItem, QSizePolicy
+from PySide6.QtWidgets import QDialog, QLineEdit, QComboBox, QSpacerItem, QSizePolicy
 
 from ui.basic import form, create_no_focus_button, create_no_focus_tool_button
+
+from ui.create.CreationTemplateViewer import CreationTemplateViewer
 
 
 class CreationDocumentEditorView(object):
@@ -28,7 +30,7 @@ class CreationDocumentEditorView(object):
             widgets=[self.template_selector, self.template_spacer, self.preview_button]
         )
 
-        self.template_preview = QTextEdit()
+        self.template_preview = CreationTemplateViewer()
         self.confirm_button = create_no_focus_button(r'')
 
         self.layout = form.create_column_layout(
