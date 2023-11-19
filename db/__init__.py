@@ -7,7 +7,7 @@ from sqlalchemy import create_engine, Engine
 from sqlalchemy.orm import Session
 
 from db.TableBase import TableBase
-from .create import EntEncoding, EntTemplate, EntCreationTemplate, EntCreationSolution, RelCreationSolutionAndTemplate
+from .create import EntEncoding, EntCreationTemplate, EntCreationDocument, EntCreationSolution, RelCreationSolutionAndDocument
 
 
 __engine: Union[Engine, None] = None

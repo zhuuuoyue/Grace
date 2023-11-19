@@ -5,7 +5,7 @@ from typing import Optional, Set, Tuple
 
 from PySide6.QtCore import QObject, Signal, Slot, Property
 
-from .TemplateEditorModel import TemplateEditorModel
+from .CreationTemplateEditorModel import CreationTemplateEditorModel
 
 _CONFIRM_BUTTON_TEXT_OK = r'确定'
 _CONFIRM_BUTTON_TEXT_EMPTY = r'模板名称不能为空'
@@ -16,7 +16,7 @@ _CONFIRM_BUTTON_CSS_INVALID = r'QPushButton { color: red; }'
 _PARAMETER_PATTERN = re.compile(r'\$\{(\w[\w\d]*)\}')
 
 
-class TemplateEditorViewModel(QObject):
+class CreationTemplateEditorViewModel(QObject):
 
     name_text_changed = Signal(str)
     content_text_changed = Signal(str)
@@ -28,7 +28,7 @@ class TemplateEditorViewModel(QObject):
     def __init__(self, existing_template_names: Set[str], parent: Optional[QObject] = None):
         super().__init__(parent)
         self.__existing_template_names: Set[str] = existing_template_names
-        self.__model = TemplateEditorModel(self)
+        self.__model = CreationTemplateEditorModel(self)
 
         # attributes
         self.__name_text: str = str()
@@ -43,7 +43,7 @@ class TemplateEditorViewModel(QObject):
         self.__model.content_changed.connect(self.on_model_content_changed)
 
     @property
-    def model(self) -> TemplateEditorModel:
+    def model(self) -> CreationTemplateEditorModel:
         return self.__model
 
     def get_name_text(self) -> str:

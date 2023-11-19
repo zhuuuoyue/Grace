@@ -5,7 +5,7 @@ from typing import List
 from sqlalchemy.orm import Session
 
 from db import get_engine
-from db.create import EntEncoding, EntCreationTemplate
+from db.create import EntEncoding, EntCreationDocument
 
 from .Encoding import Encoding
 from .TemplateData import TemplateData
@@ -20,7 +20,7 @@ def get_encodings() -> List[Encoding]:
 
 def create_document(document: DocumentData):
     with Session(get_engine()) as session:
-        created_template = EntCreationTemplate(
+        created_template = EntCreationDocument(
             id=document.id,
             template_id=document.template_id,
             relative_path=document.relative_path,
@@ -32,7 +32,7 @@ def create_document(document: DocumentData):
 
 def delete_document(template: TemplateData):
     with Session(get_engine()) as session:
-        searched_template = session.query(EntCreationTemplate).filter(EntCreationTemplate.id == template.id).first()
+        searched_template = session.query(EntCreationDocument).filter(EntCreationDocument.id == template.id).first()
         if searched_template is not None:
             session.delete(searched_template)
             session.commit()
@@ -44,7 +44,7 @@ def update_document():
 
 def retrieve_documents() -> List[DocumentData]:
     with Session(get_engine()) as session:
-        searched_templates = session.query(EntCreationTemplate).order_by(EntCreationTemplate.relative_path).all()
+        searched_templates = session.query(EntCreationDocument).order_by(EntCreationDocument.relative_path).all()
         return [
             DocumentData(
                 document_id=searched_template.id,

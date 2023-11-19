@@ -6,12 +6,12 @@ from PySide6.QtGui import QIcon
 
 from ui.basic import form, utils
 
-from .EditTemplatesViewModel import EditTemplatesViewModel
+from .EditCreationTemplatesViewModel import EditCreationTemplatesViewModel
 
 
-class EditTemplatesView(object):
+class EditCreationTemplatesView(object):
 
-    def __init__(self, dialog: QDialog, vm: EditTemplatesViewModel):
+    def __init__(self, dialog: QDialog, vm: EditCreationTemplatesViewModel):
         dialog.setMinimumSize(800, 600)
         dialog.setWindowTitle(r'编辑模板')
         dialog.setWindowIcon(QIcon(utils.get_image_path('document')))

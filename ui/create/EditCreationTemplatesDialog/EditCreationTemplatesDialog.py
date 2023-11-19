@@ -7,17 +7,17 @@ from PySide6.QtWidgets import QDialog, QWidget
 
 from tasks.create import EditTemplateTasks
 
-from .EditTemplatesView import EditTemplatesView
-from .EditTemplatesViewModel import EditTemplatesViewModel
-from ui.create.TemplateEditor import TemplateEditor
+from .EditCreationTemplatesView import EditCreationTemplatesView
+from .EditCreationTemplatesViewModel import EditCreationTemplatesViewModel
+from ui.create.CreationTemplateEditor import CreationTemplateEditor
 
 
-class EditTemplatesDialog(QDialog):
+class EditCreationTemplatesDialog(QDialog):
 
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
-        self.vm = EditTemplatesViewModel(self)
-        self.ui = EditTemplatesView(self, self.vm)
+        self.vm = EditCreationTemplatesViewModel(self)
+        self.ui = EditCreationTemplatesView(self, self.vm)
 
         self.ui.template_list.clicked.connect(self.vm.set_current_template_index)
         self.ui.new_button.clicked.connect(self.__on_new_button_clicked)
@@ -41,7 +41,7 @@ class EditTemplatesDialog(QDialog):
 
     @Slot()
     def __on_new_button_clicked(self):
-        editor = TemplateEditor(existing_template_names={'cpp', 'python'}, parent=self)
+        editor = CreationTemplateEditor(existing_template_names={'cpp', 'python'}, parent=self)
         if 1 == editor.exec():
             new_template = editor.get_data()
             EditTemplateTasks.add_template(new_template)
@@ -63,7 +63,7 @@ class EditTemplatesDialog(QDialog):
         current_template_name = current_template_data.name
         existing_template_names = EditTemplateTasks.get_template_names()
         existing_template_names.remove(current_template_name)
-        editor = TemplateEditor(
+        editor = CreationTemplateEditor(
             existing_template_names=existing_template_names,
             data=current_template_data,
             parent=self

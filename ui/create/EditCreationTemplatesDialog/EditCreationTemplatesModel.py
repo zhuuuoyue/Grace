@@ -7,7 +7,7 @@ from PySide6.QtCore import QObject, Signal, Property
 from tasks.create import EditTemplateTasks, TemplateData
 
 
-class EditTemplatesModel(QObject):
+class EditCreationTemplatesModel(QObject):
 
     data_changed = Signal(type(Dict[str, str]))
 

@@ -5,14 +5,14 @@ from typing import Optional, Set
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QWidget, QDialog
 
-from .CreationSolutionNameEditorView import CreationSolutionNameEditorView
+from .CreationSolutionEditorView import CreationSolutionEditorView
 
 
-class CreationSolutionNameEditorDialog(QDialog):
+class CreationSolutionEditorDialog(QDialog):
 
     def __init__(self, existing_name: Optional[Set[str]] = None, parent: Optional[QWidget] = None):
         super().__init__(parent)
-        self.ui = CreationSolutionNameEditorView(self)
+        self.ui = CreationSolutionEditorView(self)
         self.existing_name: Set[str] = set() if existing_name is None else existing_name
 
         self.ui.input.textChanged.connect(self.__on_input_text_changed)

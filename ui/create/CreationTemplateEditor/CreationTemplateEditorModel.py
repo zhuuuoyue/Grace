@@ -7,7 +7,7 @@ from PySide6.QtCore import QObject, Signal, Slot, Property
 from tasks.create import TemplateData
 
 
-class TemplateEditorModel(QObject):
+class CreationTemplateEditorModel(QObject):
 
     name_changed = Signal(str)
     content_changed = Signal(str)

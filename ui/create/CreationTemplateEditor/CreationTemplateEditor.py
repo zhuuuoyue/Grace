@@ -7,18 +7,18 @@ from PySide6.QtWidgets import QDialog, QWidget
 
 from tasks.create import TemplateData
 
-from .TemplateEditorViewModel import TemplateEditorViewModel
-from .TemplateEditorView import TemplateEditorView
+from .CreationTemplateEditorViewModel import CreationTemplateEditorViewModel
+from .CreationTemplateEditorView import CreationTemplateEditorView
 
 
-class TemplateEditor(QDialog):
+class CreationTemplateEditor(QDialog):
 
     def __init__(self, existing_template_names: Set[str],
                  data: Optional[TemplateData] = None,
                  parent: Optional[QWidget] = None):
         super().__init__(parent)
-        self.vm = TemplateEditorViewModel(existing_template_names, self)
-        self.ui = TemplateEditorView(self, self.vm)
+        self.vm = CreationTemplateEditorViewModel(existing_template_names, self)
+        self.ui = CreationTemplateEditorView(self, self.vm)
 
         self.vm.name_text_changed.connect(self.on_vm_name_text_changed)
         self.vm.content_text_changed.connect(self.on_vm_content_text_changed)

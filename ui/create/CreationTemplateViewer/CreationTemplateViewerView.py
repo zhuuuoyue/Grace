@@ -4,7 +4,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDialog, QTextEdit, QVBoxLayout
 
 
-class TemplateViewerView(object):
+class CreationTemplateViewerView(object):
 
     def __init__(self, dialog: QDialog):
         dialog.setMinimumSize(400, 300)

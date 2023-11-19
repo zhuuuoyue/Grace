@@ -5,7 +5,7 @@ from PySide6.QtWidgets import QDialog, QLineEdit, QVBoxLayout
 from ui.basic import create_no_focus_button
 
 
-class CreationSolutionNameEditorView(object):
+class CreationSolutionEditorView(object):
 
     def __init__(self, dialog: QDialog):
         dialog.setWindowTitle(r'编辑模板名称')
