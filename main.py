@@ -9,6 +9,7 @@ from ui import Application, MainWindow, MenuData, ActionData, register_commands
 import context
 import db
 import exts
+import ui
 
 
 def load_menus() -> Sequence[MenuData]:
@@ -36,13 +37,13 @@ if __name__ == '__main__':
     context.initialize(os.getcwd())
     ctx = context.get_context()
     db.initialize(ctx.data_file_path)
+    ui.initialize(ctx)
     menus = load_menus()
     register_commands()
 
     app = Application(sys.argv)
 
     win = MainWindow(menus)
-    win.move(0, 0)
     win.show()
 
     ctx.app = app
