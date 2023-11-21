@@ -5,30 +5,29 @@ import sys
 import json
 from typing import Sequence, List
 
-from ui import Application, MainWindow, MenuData, ActionData, register_commands
-import context
+from service import context
 import db
-import exts
-import ui
+import extensions
+import app
 
 
-def load_menus() -> Sequence[MenuData]:
-    result: List[MenuData] = list()
+def load_menus() -> Sequence[app.MenuData]:
+    result: List[app.MenuData] = list()
     with open('ui.json') as fp:
         data = json.load(fp)
         modules = data['modules']
         for module in modules:
             commands = module['commands']
-            actions: List[ActionData] = list()
+            actions: List[app.ActionData] = list()
             for command in commands:
-                action = ActionData(
+                action = app.ActionData(
                     command_id=command['command_id'],
                     title=command['title'],
                     icon=command['icon'],
                     tooltip=command['tooltip']
                 )
                 actions.append(action)
-            menu = MenuData(module['title'], actions)
+            menu = app.MenuData(module['title'], actions)
             result.append(menu)
     return result
 
@@ -37,19 +36,18 @@ if __name__ == '__main__':
     context.initialize(os.getcwd())
     ctx = context.get_context()
     db.initialize(ctx.data_file_path)
-    ui.initialize(ctx)
+    app.initialize(ctx)
     menus = load_menus()
-    register_commands()
 
-    app = Application(sys.argv)
+    application = app.Application(sys.argv)
 
-    win = MainWindow(menus)
-    win.show()
+    window = app.MainWindow(menus)
+    window.show()
 
-    ctx.app = app
-    ctx.main_window = win
-    exts.initialize(ctx)
+    ctx.app = application
+    ctx.main_window = window
+    extensions.initialize(ctx)
 
-    exit_code = app.exec()
+    exit_code = application.exec()
 
     sys.exit(exit_code)
