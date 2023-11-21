@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from PySide6.QtCore import QObject, Signal, Slot
-
-from common import are_same_string_lists, are_same_lists, is_string_list, is_list_of, FilterX
 
 
 class DirectoryInformation(object):
@@ -18,12 +16,6 @@ class DirectoryInformation(object):
         if not isinstance(other, DirectoryInformation):
             return False
         return self.path == other.path and self.checked == other.checked
-
-
-class IsDirectoryInformation(FilterX):
-
-    def filter(self, obj: Any) -> bool:
-        return isinstance(obj, DirectoryInformation)
 
 
 class CleanLogFilesViewModel(QObject):
@@ -62,12 +54,9 @@ class CleanLogFilesViewModel(QObject):
 
     @repositories.setter
     def repositories(self, value: List[str]):
-        if not is_string_list(value):
-            return
-        if are_same_string_lists(self.repositories, value):
-            return
-        self.__repositories = value
-        self.repositories_changed.emit()
+        if self.repositories != value:
+            self.__repositories = value
+            self.repositories_changed.emit()
 
     @property
     def repository(self) -> int:
@@ -90,13 +79,10 @@ class CleanLogFilesViewModel(QObject):
         return self.__configurations
 
     @configurations.setter
-    def configurations(self, value):
-        if not is_string_list(value):
-            return
-        if are_same_string_lists(self.configurations, value):
-            return
-        self.__configurations = value
-        self.configurations_changed.emit()
+    def configurations(self, value: List[str]):
+        if self.configurations != value:
+            self.__configurations = value
+            self.configurations_changed.emit()
 
     @property
     def configuration(self) -> int:
@@ -120,12 +106,9 @@ class CleanLogFilesViewModel(QObject):
 
     @directories.setter
     def directories(self, value: List[DirectoryInformation]):
-        if not is_list_of(value, IsDirectoryInformation()):
-            return
-        if are_same_lists(value, self.directories):
-            return
-        self.__directories = value
-        self.directories_changed.emit()
+        if self.directories != value:
+            self.__directories = value
+            self.directories_changed.emit()
 
     def update_directories(self):
         if self.repository < 0 or self.repository >= len(self.repositories):

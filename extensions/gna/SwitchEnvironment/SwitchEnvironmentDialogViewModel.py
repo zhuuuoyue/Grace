@@ -5,9 +5,6 @@ from typing import Any, Optional, Sequence, List
 
 from PySide6.QtCore import QObject, Signal, Slot
 
-from common.filter import FilterX
-from common import is_list_of, are_same_lists
-
 from ..utils import infer_environment, environment_to_string
 from extensions.gna.concept import Environment
 
@@ -24,12 +21,6 @@ class EnvironmentOption(object):
         if not isinstance(other, EnvironmentOption):
             return False
         return self.name == other.name and self.enabled == other.enabled and self.checked == other.checked
-
-
-class IsEnvironmentOption(FilterX):
-
-    def filter(self, obj: Any) -> bool:
-        return isinstance(obj, EnvironmentOption)
 
 
 class SwitchEnvironmentDialogViewModel(QObject):
@@ -119,12 +110,9 @@ class SwitchEnvironmentDialogViewModel(QObject):
 
     @environment_options.setter
     def environment_options(self, opts: List[EnvironmentOption]):
-        if not is_list_of(opts, IsEnvironmentOption()):
-            return
-        if are_same_lists(self.environment_options, opts):
-            return
-        self.__environment_options = opts
-        self.environment_options_changed.emit()
+        if self.environment_options != opts:
+            self.__environment_options = opts
+            self.environment_options_changed.emit()
 
     @Slot(str)
     def update_environment_options(self, current_environment: str):

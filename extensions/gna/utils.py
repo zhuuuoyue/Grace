@@ -6,7 +6,6 @@ from typing import Optional, Sequence, List, Dict, Union
 from xml.dom import minidom as xml_dom
 
 from service import get_searcher, SearcherType, ISearcher
-from common import is_string_list
 
 from .concept import Environment
 
@@ -87,8 +86,7 @@ class CleanDirectories(object):
 
     @clean_list.setter
     def clean_list(self, value: List[str]):
-        if is_string_list(value):
-            self.__clean_list = value
+        self.__clean_list = value
 
     def run(self) -> CleanDirectoriesResult:
         result = CleanDirectoriesResult()
