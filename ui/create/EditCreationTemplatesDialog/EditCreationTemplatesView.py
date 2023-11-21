@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 
-from PySide6.QtCore import Qt, QStringListModel
-from PySide6.QtWidgets import QDialog, QWidget, QToolButton, QListView, QTextEdit, QLayout, QHBoxLayout, QVBoxLayout, QSpacerItem, QSizePolicy
+from PySide6.QtWidgets import (
+    QDialog, QWidget, QToolButton, QListView,
+    QHBoxLayout, QVBoxLayout, QSpacerItem, QSizePolicy
+)
 from PySide6.QtGui import QIcon
 
-from ui.basic import form, utils
+from ui.basic import utils
 
-from .EditTemplateViewModel import EditTemplateViewModel
+from ui.create.CreationTemplateViewer import CreationTemplateViewer
+
+from .EditCreationTemplatesViewModel import EditCreationTemplatesViewModel
 
 
-class EditTemplateView(object):
+class EditCreationTemplatesView(object):
 
-    def __init__(self, dialog: QDialog, vm: EditTemplateViewModel):
+    def __init__(self, dialog: QDialog, vm: EditCreationTemplatesViewModel):
         dialog.setMinimumSize(800, 600)
         dialog.setWindowTitle(r'编辑模板')
         dialog.setWindowIcon(QIcon(utils.get_image_path('document')))
@@ -48,7 +52,7 @@ class EditTemplateView(object):
         self.left_panel.setFixedWidth(240)
         self.left_panel.setLayout(self.left_panel_layout)
 
-        self.template_preview = QTextEdit()
+        self.template_preview = CreationTemplateViewer()
         self.template_preview.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
 
         self.layout = QHBoxLayout()

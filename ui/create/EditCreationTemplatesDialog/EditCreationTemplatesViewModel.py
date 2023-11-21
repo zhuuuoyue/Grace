@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Dict
+from typing import Optional, Dict, Union
 
 from PySide6.QtCore import QObject, Property, Slot, Signal, QStringListModel, QModelIndex
 
-from .EditTemplateModel import EditTemplateModel
+from tasks.create import TemplateData
+
+from .EditCreationTemplatesModel import EditCreationTemplatesModel
 
 
-class EditTemplateViewModel(QObject):
+class EditCreationTemplatesViewModel(QObject):
 
     new_button_enabled_changed = Signal(bool)
     remove_button_enabled_changed = Signal(bool)
@@ -22,7 +24,7 @@ class EditTemplateViewModel(QObject):
         super().__init__(parent)
 
         # model
-        self.__model: EditTemplateModel = EditTemplateModel(self)
+        self.__model: EditCreationTemplatesModel = EditCreationTemplatesModel(self)
         self.__template_list_model = QStringListModel(self)
 
         # view model
@@ -42,6 +44,11 @@ class EditTemplateViewModel(QObject):
 
     def create_index(self, row: Optional[int] = -1) -> QModelIndex:
         return self.__template_list_model.createIndex(row, 0)
+
+    def get_model(self) -> EditCreationTemplatesModel:
+        return self.__model
+
+    model = property(fget=get_model)
 
     def get_template_list_model(self) -> QStringListModel:
         return self.__template_list_model
@@ -157,6 +164,7 @@ class EditTemplateViewModel(QObject):
             for new_current_template_index, new_template_name in enumerate(new_template_name_list):
                 if new_template_name == old_current_template_name:
                     self.current_template_index = self.create_index(new_current_template_index)
+                    break
 
         if self.current_template_index.row() < 0 < len(new_template_name_list):
             self.current_template_index = self.create_index(0)
@@ -184,3 +192,14 @@ class EditTemplateViewModel(QObject):
             template_content = self.__model.data[current_template_name]
             # to paint
             self.template_preview_text = template_content
+
+    def get_current_template_data(self) -> Union[TemplateData, None]:
+        current_template_index = self.current_template_index.row()
+        template_name_list = self.template_list_model.stringList()
+        if current_template_index < 0 or current_template_index >= len(template_name_list):
+            return None
+        current_template_name = template_name_list[current_template_index]
+        current_template_content = self.model.get_content(current_template_name)
+        if current_template_content is None:
+            return None
+        return TemplateData(name=current_template_name, content=current_template_content)

@@ -1,3 +1,4 @@
 # -*- coding: utf-8 -*-
 
-from .EditTemplate import EditTemplateCommand
+from .EditTemplatesCommand import EditTemplateCommand
+from .EditCreationSolutionsCommand import EditCreationSolutionsCommand

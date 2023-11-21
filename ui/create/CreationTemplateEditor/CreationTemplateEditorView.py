@@ -5,12 +5,12 @@ from PySide6.QtWidgets import QDialog, QLineEdit, QPlainTextEdit
 
 from ui.basic import form, create_no_focus_button
 
-from .TemplateEditorViewModel import TemplateEditorViewModel
+from .CreationTemplateEditorViewModel import CreationTemplateEditorViewModel
 
 
-class TemplateEditorView(object):
+class CreationTemplateEditorView(object):
 
-    def __init__(self, dialog: QDialog, vm: TemplateEditorViewModel):
+    def __init__(self, dialog: QDialog, vm: CreationTemplateEditorViewModel):
         dialog.setWindowTitle(r'模板编辑器')
         dialog.setMinimumSize(400, 300)
         dialog.resize(600, 400)
@@ -37,14 +37,12 @@ class TemplateEditorView(object):
         self.parameter_layout = form.create_row_layout(title=self.parameter_title, widget=self.parameter_input)
         self.parameter_layout.setAlignment(self.parameter_title, Qt.AlignmentFlag.AlignTop)
 
-        self.confirm_button = create_no_focus_button(r'确定')
-        self.confirm_button.setFixedWidth(64)
+        self.confirm_button = create_no_focus_button(r'')
 
         self.layout = form.create_column_layout(
             [self.name_layout, self.content_layout, self.parameter_layout, self.confirm_button],
             spacing=8
         )
-        self.layout.setAlignment(self.confirm_button, Qt.AlignmentFlag.AlignRight)
         self.layout.setContentsMargins(8, 8, 8, 8)
         dialog.setLayout(self.layout)
 
@@ -53,3 +51,5 @@ class TemplateEditorView(object):
         self.content_input.setPlainText(vm.content_text)
         self.parameter_input.setPlainText(vm.parameters_text)
         self.confirm_button.setEnabled(vm.confirm_enabled)
+        self.confirm_button.setText(vm.confirm_text)
+        self.confirm_button.setStyleSheet(vm.confirm_css)

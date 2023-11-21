@@ -2,15 +2,15 @@
 
 from command import ICommand
 
-from .EditTemplateDialog import EditTemplateDialog
+from .EditCreationSolutionsDialog import EditCreationSolutionsDialog
 
 
-class EditTemplateCommand(ICommand):
+class EditCreationSolutionsCommand(ICommand):
 
     def __init__(self):
         super().__init__()
 
     def exec(self, *args, **kwargs):
-        dialog = EditTemplateDialog()
+        dialog = EditCreationSolutionsDialog()
         dialog.initialize()
         dialog.exec()

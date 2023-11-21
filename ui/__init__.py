@@ -13,3 +13,4 @@ def register_commands():
 
     # create
     register_command('cmd_edit_template', EditTemplateCommand())
+    register_command('cmd_edit_creation_solutions', EditCreationSolutionsCommand())
