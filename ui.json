@@ -35,8 +35,8 @@
                     "tooltip": ""
                 },
                 {
-                    "command_id": "cmd_edit_creation_solution",
-                    "title": "Edit Creation Solution",
+                    "command_id": "cmd_edit_creation_solutions",
+                    "title": "Edit Creation Solutions",
                     "icon": "documents",
                     "tooltip": ""
                 },
