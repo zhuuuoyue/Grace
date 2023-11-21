@@ -3,7 +3,9 @@
 from typing import Optional, List
 
 from PySide6.QtCore import Qt, Slot
-from PySide6.QtWidgets import QDialog, QWidget, QListWidgetItem, QMessageBox
+from PySide6.QtWidgets import QWidget, QListWidgetItem, QMessageBox
+
+from ui.basic.DialogBase import DialogBase
 
 from .CleanLogFilesViewModel import CleanLogFilesViewModel
 from .CleanLogFilesView import CleanLogFilesView
@@ -11,10 +13,10 @@ from .CleanLogFilesView import CleanLogFilesView
 from exts.gna.utils import CleanDirectories
 
 
-class CleanLogFilesDialog(QDialog):
+class CleanLogFilesDialog(DialogBase):
 
     def __init__(self, parent: Optional[QWidget] = None):
-        super().__init__(parent)
+        super().__init__(object_name='59d1f09f-9216-46d6-9d47-ef1b8a3cb217', parent=parent)
         self.__vm = CleanLogFilesViewModel(self)
         self.__ui = CleanLogFilesView(self, self.__vm)
 

@@ -3,15 +3,17 @@
 from typing import Optional, Set
 
 from PySide6.QtCore import Slot
-from PySide6.QtWidgets import QWidget, QDialog
+from PySide6.QtWidgets import QWidget
+
+from ui.basic.DialogBase import DialogBase
 
 from .CreationSolutionEditorView import CreationSolutionEditorView
 
 
-class CreationSolutionEditorDialog(QDialog):
+class CreationSolutionEditorDialog(DialogBase):
 
     def __init__(self, existing_solution_names: Optional[Set[str]] = None, parent: Optional[QWidget] = None):
-        super().__init__(parent)
+        super().__init__(object_name='266f570c-8822-4e66-a4aa-5758f0c85b2a', parent=parent)
         self.__ui = CreationSolutionEditorView(self)
         self.__existing_solution_names: Set[str] = set() if existing_solution_names is None else existing_solution_names
 

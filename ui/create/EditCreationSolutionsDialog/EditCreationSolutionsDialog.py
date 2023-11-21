@@ -3,9 +3,10 @@
 from typing import Optional
 
 from PySide6.QtCore import Slot, QModelIndex, QStringListModel
-from PySide6.QtWidgets import QDialog, QWidget
+from PySide6.QtWidgets import QWidget
 
 from tasks.create import EditSolutionTasks, SolutionData
+from ui.basic.DialogBase import DialogBase
 
 from ui.create.CreationSolutionEditor import CreationSolutionEditorDialog
 from ui.create.CreationDocumentEditor import CreationDocumentEditorDialog
@@ -14,10 +15,10 @@ from .EditCreationSolutionsView import EditCreationSolutionsView
 from .EditCreationSolutionsViewModel import EditCreationSolutionsViewModel
 
 
-class EditCreationSolutionsDialog(QDialog):
+class EditCreationSolutionsDialog(DialogBase):
 
     def __init__(self, parent: Optional[QWidget] = None):
-        super().__init__(parent)
+        super().__init__(object_name='b870dbad-9d26-4d6f-8315-d4569ed635ed', parent=parent)
         self.__ui = EditCreationSolutionsView(self)
         self.__vm = EditCreationSolutionsViewModel(self)
         self.__ui.solution_list.setModel(self.__vm.solution_list_model)

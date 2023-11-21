@@ -3,19 +3,21 @@
 from typing import Optional
 
 from PySide6.QtCore import Slot
-from PySide6.QtWidgets import QDialog, QWidget
+from PySide6.QtWidgets import QWidget
 
 from tasks.create import EditTemplateTasks
+
+from ui.basic.DialogBase import DialogBase
 
 from .EditCreationTemplatesView import EditCreationTemplatesView
 from .EditCreationTemplatesViewModel import EditCreationTemplatesViewModel
 from ui.create.CreationTemplateEditor import CreationTemplateEditor
 
 
-class EditCreationTemplatesDialog(QDialog):
+class EditCreationTemplatesDialog(DialogBase):
 
     def __init__(self, parent: Optional[QWidget] = None):
-        super().__init__(parent)
+        super().__init__(object_name='491d3fc2-1bd1-485c-bb62-ebd27a45dd7e', parent=parent)
         self.vm = EditCreationTemplatesViewModel(self)
         self.ui = EditCreationTemplatesView(self, self.vm)
 

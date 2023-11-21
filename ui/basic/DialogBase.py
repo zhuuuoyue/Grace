@@ -1,35 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from uuid import UUID
-from typing import Optional, Union
+from typing import Optional
 
 from PySide6.QtWidgets import QDialog, QWidget
 from PySide6.QtGui import QCloseEvent
 
-from ui import get_ui_cache
+from ui.basic.UICache import update_dialog_geometry, update_dialog_geometry_cache
 
 
 class DialogBase(QDialog):
 
-    def __init__(self, dialog_id: Optional[UUID] = None, parent: Optional[QWidget] = None):
+    def __init__(self, object_name: Optional[str] = None, parent: Optional[QWidget] = None):
         super().__init__(parent)
-        self.__dialog_id: Union[UUID, None] = None
-        self.dialog_id = dialog_id
-
-        dialog_geometry_cache = get_ui_cache().get_dialog_geometry(self.dialog_id)
-        if dialog_geometry_cache is not None:
-            self.resize(dialog_geometry_cache[1])
-            self.move(dialog_geometry_cache[0])
-
-    @property
-    def dialog_id(self) -> Union[UUID, None]:
-        return self.__dialog_id
-
-    @dialog_id.setter
-    def dialog_id(self, value: Union[UUID, None]):
-        if isinstance(value, UUID):
-            self.__dialog_id = value
+        self.setObjectName(object_name)
+        update_dialog_geometry(self)
 
     def closeEvent(self, event: QCloseEvent) -> None:
-        get_ui_cache().update_dialog_geometry(self.dialog_id, self.pos(), self.size())
+        update_dialog_geometry_cache(self)
         super().closeEvent(event)

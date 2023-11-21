@@ -4,17 +4,19 @@ from copy import deepcopy
 from typing import Optional
 
 from PySide6.QtCore import Slot, QSize, QSignalBlocker
-from PySide6.QtWidgets import QDialog, QWidget
+from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QResizeEvent
+
+from ui.basic.DialogBase import DialogBase
 
 from .CreationDocumentEditorView import CreationDocumentEditorView
 from .CreationDocumentEditorViewModel import CreationDocumentEditorViewModel
 
 
-class CreationDocumentEditorDialog(QDialog):
+class CreationDocumentEditorDialog(DialogBase):
 
     def __init__(self, parent: Optional[QWidget] = None):
-        super().__init__(parent)
+        super().__init__(object_name='24691d7f-5fe5-45bb-82f0-cafdc03a3585', parent=parent)
         self.__ui = CreationDocumentEditorView(self)
         self.__vm = CreationDocumentEditorViewModel(self)
         self.__load_data()

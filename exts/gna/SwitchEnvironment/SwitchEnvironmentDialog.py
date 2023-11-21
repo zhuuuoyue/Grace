@@ -3,17 +3,19 @@
 from typing import Sequence, Optional
 
 from PySide6.QtCore import Slot
-from PySide6.QtWidgets import QWidget, QDialog, QRadioButton
+from PySide6.QtWidgets import QWidget, QRadioButton
+
+from ui.basic.DialogBase import DialogBase
 
 from .SwitchEnvironmentDialogViewModel import SwitchEnvironmentDialogViewModel
 from .SwitchEnvironmentDialogView import SwitchEnvironmentDialogView
 from .SwitchEnvironmentTask import SwitchEnvironmentTask
 
 
-class SwitchEnvironmentDialog(QDialog):
+class SwitchEnvironmentDialog(DialogBase):
 
     def __init__(self, packages: Sequence[str], task: SwitchEnvironmentTask, parent: Optional[QWidget] = None):
-        super().__init__(parent)
+        super().__init__(object_name='94edc04c-e7af-452e-b2ca-4626db52e8e2', parent=parent)
         self.vm = SwitchEnvironmentDialogViewModel(packages, self)
         self.ui = SwitchEnvironmentDialogView(self, self.vm)
         self.task = task
