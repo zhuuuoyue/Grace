@@ -22,7 +22,7 @@ def get_solution_names() -> Set[str]:
 
 def get_solutions() -> List[SolutionData]:
     with Session(get_engine()) as session:
-        items = session.query(EntCreationSolution).order_by(EntCreationSolution.id).all()
+        items = session.query(EntCreationSolution).order_by(EntCreationSolution.name).all()
         result: List[SolutionData] = list()
         for item in items:
             solution_data = SolutionData(object_id=item.id, name=item.name)
