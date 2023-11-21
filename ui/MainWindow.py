@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
+from uuid import UUID
 from typing import Optional, Sequence, Union, List
 
 from PySide6.QtCore import Qt, QObject, Signal, Slot
 from PySide6.QtWidgets import QMainWindow, QWidget, QMenuBar, QMenu
-from PySide6.QtGui import QAction, QIcon
+from PySide6.QtGui import QAction, QIcon, QCloseEvent
 
 from command import execute_command
 
 from .basic.utils import get_image_path
+from .basic.UICache import get_ui_cache
 
 
 class ActionData(object):
@@ -46,13 +48,26 @@ class MainWindow(QMainWindow):
     def __init__(self, menus: Sequence[MenuData], parent: Optional[QWidget] = None,
                  flags: Qt.WindowType = Qt.WindowType.Window):
         super().__init__(parent, flags)
+        self.__dialog_id = UUID("{AE4FD4EA-66E5-421A-B944-410E17E260DF}")
         self.initialize(menus)
+
+    def closeEvent(self, event: QCloseEvent) -> None:
+        cache = get_ui_cache()
+        cache.update_dialog_geometry(self.__dialog_id, self.pos(), self.size())
+        cache.save()
+        super().closeEvent(event)
 
     def initialize(self, menus: Sequence[MenuData]):
         self.setWindowTitle('Grace - Make your programming graceful')
         self.setFixedHeight(22)
         self.setMinimumWidth(512)
         self.setWindowIcon(QIcon(get_image_path('cat-48')))
+
+        cache = get_ui_cache()
+        dialog_geometry = cache.get_dialog_geometry(self.__dialog_id)
+        if dialog_geometry is not None:
+            self.resize(dialog_geometry[1])
+            self.move(dialog_geometry[0])
 
         for menu_data in menus:
             menu = self.get_menu(menu_data.title)
