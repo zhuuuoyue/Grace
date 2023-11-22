@@ -2,9 +2,9 @@
 
 import os
 import json
-from typing import Union, Dict
+from typing import Optional, Union, Dict
 
-from PySide6.QtCore import QPoint, QSize
+from PySide6.QtCore import QPoint, QSize, QRect, QObject
 from PySide6.QtWidgets import QDialog, QMainWindow
 
 
@@ -35,6 +35,20 @@ class DialogGeometry(object):
         }
 
 
+class DialogGeometryValidator(QObject):
+
+    def __init__(self, parent: Optional[QObject] = None):
+        super().__init__(parent)
+        self.__rect: Union[QRect, None] = None
+        self.update()
+
+    def validate(self, dialog_geometry: DialogGeometry) -> bool:
+        return True
+
+    def update(self):
+        pass
+
+
 class UICache(object):
 
     _CACHE_DIRECTORY = 'cache'
@@ -45,6 +59,7 @@ class UICache(object):
     def __init__(self, workspace_path: str):
         self.__cache_directory: str = os.path.join(workspace_path, UICache._CACHE_DIRECTORY)
         self.__dialog_geometry_cache: Dict[str, DialogGeometry] = dict()
+        self.__dialog_geometry_validator = DialogGeometryValidator()
 
     def update_dialog_geometry_cache(self, dialog: [QDialog, QMainWindow]):
         dialog_object_name = dialog.objectName()
@@ -57,9 +72,10 @@ class UICache(object):
     def update_dialog_geometry(self, dialog: [QDialog, QMainWindow]):
         dialog_object_name = dialog.objectName()
         if len(dialog_object_name) != 0 and dialog_object_name in self.__dialog_geometry_cache:
-            record = self.__dialog_geometry_cache[dialog_object_name]
-            dialog.resize(record.size)
-            dialog.move(record.position)
+            dialog_geometry = self.__dialog_geometry_cache[dialog_object_name]
+            if self.__dialog_geometry_validator.validate(dialog_geometry):
+                dialog.resize(dialog_geometry.size)
+                dialog.move(dialog_geometry.position)
 
     def load(self):
         dialog_geometry_cache_file_path = os.path.join(self.__cache_directory, UICache._DIALOG_GEOMETRY_CACHE_FILENAME)
@@ -103,12 +119,10 @@ def initialize_ui_cache(workspace_directory: str):
     _ui_cache.load()
 
 
-def flush_ui_cache():
-    get_ui_cache().save()
-
-
-def update_dialog_geometry_cache(dialog: [QDialog, QMainWindow]):
+def update_dialog_geometry_cache(dialog: [QDialog, QMainWindow], flush: Optional[bool] = False):
     get_ui_cache().update_dialog_geometry_cache(dialog)
+    if flush:
+        get_ui_cache().save()
 
 
 def update_dialog_geometry(dialog: [QDialog, QMainWindow]):
