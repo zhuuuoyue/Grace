@@ -5,7 +5,7 @@ from service.context import Context
 from app import ActionData, MainWindow
 
 from .CleanLogFiles import CleanLogFilesCommand
-from .SwitchEnvironment import SwitchEnvironmentCommand
+from .switch_environment import SwitchEnvironmentCommand
 
 
 def initialize(ctx: Context):
