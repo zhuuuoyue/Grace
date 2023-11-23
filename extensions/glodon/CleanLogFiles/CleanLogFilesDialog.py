@@ -3,14 +3,13 @@
 from typing import Optional, List
 
 from PySide6.QtCore import Qt, Slot
-from PySide6.QtWidgets import QWidget, QListWidgetItem, QMessageBox
+from PySide6.QtWidgets import QWidget, QListWidgetItem
 
+from shared.utils import clean_directories
 from ui.base import DialogBase
 
 from .CleanLogFilesViewModel import CleanLogFilesViewModel
 from .CleanLogFilesView import CleanLogFilesView
-
-from extensions.gna.utils import CleanDirectories
 
 
 class CleanLogFilesDialog(DialogBase):
@@ -69,7 +68,5 @@ class CleanLogFilesDialog(DialogBase):
         for dir_info in dir_info_list:
             if dir_info.checked:
                 clean_list.append(dir_info.path)
-        cleaner = CleanDirectories(clean_list)
-        result = cleaner.run()
-        QMessageBox.information(self, 'Clean Log Files', f'Succeeded: {result.succeeded}\nFailed: {result.failed}')
+        clean_directories(clean_list)
         self.__vm.end_cleaning()

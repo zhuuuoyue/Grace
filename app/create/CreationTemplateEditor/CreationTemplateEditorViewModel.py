@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import re
 from typing import Optional, Set, Tuple
 
 from PySide6.QtCore import QObject, Signal, Slot, Property
+
+from tasks.create import extract_parameters
 
 from .CreationTemplateEditorModel import CreationTemplateEditorModel
 
@@ -12,8 +13,6 @@ _CONFIRM_BUTTON_TEXT_EMPTY = r'模板名称不能为空'
 _CONFIRM_BUTTON_TEXT_DUPLICATED = r'模板名称已存在'
 _CONFIRM_BUTTON_CSS_VALID = r'QPushButton { color: black; }'
 _CONFIRM_BUTTON_CSS_INVALID = r'QPushButton { color: red; }'
-
-_PARAMETER_PATTERN = re.compile(r'\$\{(\w[\w\d]*)\}')
 
 
 class CreationTemplateEditorViewModel(QObject):
@@ -122,7 +121,7 @@ class CreationTemplateEditorViewModel(QObject):
     @Slot(str)
     def on_model_content_changed(self, content: str):
         self.content_text = content
-        result = re.findall(_PARAMETER_PATTERN, content)
+        result = extract_parameters(content)
         self.parameters_text = ', '.join(set(result))
 
     # public

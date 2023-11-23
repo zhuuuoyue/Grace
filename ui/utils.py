@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QIcon
 
-from service import context
+from shared import context
 
 
 def get_image_path(image_name: str) -> str:

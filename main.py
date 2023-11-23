@@ -5,7 +5,7 @@ import sys
 import json
 from typing import Sequence, List
 
-from service import context
+from shared import context
 import db
 import extensions
 import app
