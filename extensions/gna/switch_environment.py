@@ -404,10 +404,12 @@ class SwitchEnvironmentDialog(DialogBase):
 
     @Slot(Environment)
     def __on_ui_environment_button_clicked(self, expected_environment: Environment):
-        self.task.set_software_package_directory(self.vm.model.current_software_path)
-        self.task.set_target_environment(expected_environment)
-        self.task.run()
-        self.vm.request_updating_environment_options()
+        current_software_path = self.vm.model.current_software_path
+        if current_software_path is not None:
+            self.task.set_software_package_directory(self.vm.model.current_software_path)
+            self.task.set_target_environment(expected_environment)
+            self.task.run()
+            self.vm.request_updating_environment_options()
 
 
 class SwitchEnvironmentCommand(ICommand):
