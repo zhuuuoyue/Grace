@@ -10,7 +10,7 @@ from ui.base import DialogBase
 from .CleanLogFilesViewModel import CleanLogFilesViewModel
 from .CleanLogFilesView import CleanLogFilesView
 
-from extensions.gna.utils import CleanDirectories
+from extensions.glodon.utils import CleanDirectories
 
 
 class CleanLogFilesDialog(DialogBase):
