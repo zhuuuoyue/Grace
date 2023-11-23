@@ -2,233 +2,301 @@
 
 import os
 import shutil
-from copy import deepcopy
-from typing import Any, List, Sequence, Optional, Union
+from typing import Any, List, Optional, Union, Tuple
 
-from PySide6.QtCore import QObject, Signal, Slot
-from PySide6.QtWidgets import (
-    QWidget, QDialog, QComboBox, QLineEdit, QRadioButton, QPushButton,
-    QSpacerItem, QSizePolicy
-)
+from PySide6.QtCore import QObject, Signal, Slot, Property, Qt
+from PySide6.QtWidgets import QWidget, QDialog, QComboBox, QPushButton, QSpacerItem, QSizePolicy
+from PySide6.QtGui import QIcon
 
 from command import ICommand
-from ui import DialogBase
-from ui.utils import create_row_title, create_row_layout, create_column_layout
+from ui import DialogBase, WidgetViewModelBase, WidgetModelBase
+from ui.utils import create_row_title, create_row_layout, create_column_layout, get_image_path
 
-from .environment import Environment, environment_to_string, infer_environment
+from .environment import Environment, infer_environment
 from .utils import detect_software_packages
+
+
+class SwitchEnvironmentDialogModel(WidgetModelBase):
+
+    software_path_list_changed = Signal(type(List[str]))
+    current_software_path_changed = Signal(type(Union[str, None]))
+    current_environment_changed = Signal(type(Union[Environment, None]))
+
+    def __init__(self, parent: Optional[QObject] = None):
+        super().__init__(parent)
+        self.__software_path_list: List[str] = list()
+        self.__current_software_path: Union[str, None] = None
+        self.__current_environment: Union[Environment, None] = None
+
+    def get_software_path_list(self) -> List[str]:
+        return self.__software_path_list
+
+    def set_software_path_list(self, value: List[str]):
+        if self.software_path_list != value:
+            self.__software_path_list = value
+            self.software_path_list_changed.emit(self.software_path_list)
+
+    def reset_software_path_list(self):
+        self.software_path_list = list()
+
+    software_path_list = Property(
+        type(List[str]),
+        fget=get_software_path_list,
+        fset=set_software_path_list,
+        freset=reset_software_path_list,
+        notify=software_path_list_changed
+    )
+
+    def get_current_software_path(self) -> Union[str, None]:
+        return self.__current_software_path
+
+    def set_current_software_path(self, value: Union[str, None]):
+        if self.current_software_path != value:
+            self.__current_software_path = value
+            self.current_software_path_changed.emit(self.current_software_path)
+
+    def reset_current_software_path(self):
+        self.current_software_path = None if len(self.software_path_list) == 0 else self.software_path_list[0]
+
+    current_software_path = Property(
+        type(Union[str, None]),
+        fget=get_current_software_path,
+        fset=set_current_software_path,
+        freset=reset_current_software_path,
+        notify=current_software_path_changed
+    )
+
+    def get_current_environment(self) -> Union[Environment, None]:
+        return self.__current_environment
+
+    def set_current_environment(self, value: Union[Environment, None]):
+        if self.current_environment != value:
+            self.__current_environment = value
+            self.current_environment_changed.emit(self.current_environment)
+
+    def reset_current_environment(self):
+        self.current_environment = None if self.current_software_path is None\
+            else infer_environment(self.current_software_path)
+
+    current_environment = Property(
+        type(Union[Environment, None]),
+        fget=get_current_environment,
+        fset=set_current_environment,
+        freset=reset_current_environment,
+        notify=current_environment_changed
+    )
+
+    def initialize(self):
+        self.software_path_list_changed.connect(self.__on_software_path_list_changed)
+        self.current_software_path_changed.connect(self.__on_current_software_path_changed)
+        self.update()
+
+    def update(self):
+        self.software_path_list = detect_software_packages(
+            include_architecture_software_package=True,
+            include_structure_software_package=True
+        )
+
+    def update_current_software_environment(self):
+        self.reset_current_environment()
+
+    @Slot(type(List[str]))
+    def __on_software_path_list_changed(self, software_path_list: List[str]):
+        self.reset_current_software_path()
+
+    @Slot(type(Union[str, None]))
+    def __on_current_software_path_changed(self, current_software_path: Union[str, None]):
+        self.reset_current_environment()
 
 
 class EnvironmentOption(object):
 
-    def __init__(self, env: Environment, name: str, enabled: bool, checked: bool):
+    def __init__(self, env: Environment, name: str, enabled: bool):
         self.environment: Environment = env
         self.name: str = name
         self.enabled: bool = enabled
-        self.checked: bool = checked
 
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, EnvironmentOption):
             return False
-        return self.name == other.name and self.enabled == other.enabled and self.checked == other.checked
+        return self.environment == other.environment and self.name == other.name and self.enabled == other.enabled
 
 
-class SwitchEnvironmentDialogViewModel(QObject):
+class SwitchEnvironmentDialogViewModel(WidgetViewModelBase):
 
-    selected_software_changed = Signal()
-    current_environment_changed = Signal(str)
-    environment_options_changed = Signal()
+    software_path_list_changed = Signal(type(List[str]))
+    current_software_path_index_changed = Signal(int)
+    environment_options_changed = Signal(type(List[EnvironmentOption]))
 
-    def __init__(self, packages: Sequence[str], parent: Optional[QObject] = None):
+    def __init__(self, parent: Optional[QObject] = None):
         super().__init__(parent)
-        self.__software_list: Sequence[str] = tuple()
-        self.__selected_software: str = ''
-        self.__current_environment: str = ''
+        self.__model = SwitchEnvironmentDialogModel(self)
+        self.__software_path_list: List[str] = list()
+        self.__current_software_path_index: int = -1
         self.__environment_options: List[EnvironmentOption] = [
-            EnvironmentOption(Environment.A, 'A', True, False),
-            EnvironmentOption(Environment.B, 'B', True, False),
-            EnvironmentOption(Environment.C, 'C', True, True),
-            EnvironmentOption(Environment.QA, 'QA', False, False),
-            EnvironmentOption(Environment.QA_STG, 'QA STG', True, False)
+            EnvironmentOption(Environment.A, 'A', True),
+            EnvironmentOption(Environment.B, 'B', True),
+            EnvironmentOption(Environment.C, 'C', True),
+            EnvironmentOption(Environment.QA, 'QA', True),
+            EnvironmentOption(Environment.QA_STG, 'QA STG', True)
         ]
 
-        self.selected_software_changed.connect(self.update_current_environment)
-        self.current_environment_changed.connect(self.update_environment_options)
+    def initialize(self):
+        # connect
+        self.model.software_path_list_changed.connect(self.__on_model_software_path_list_changed)
+        self.model.current_software_path_changed.connect(self.__on_model_current_software_path_changed)
+        self.model.current_environment_changed.connect(self.__on_model_current_environment_changed)
+        # initialize members
+        self.model.initialize()
 
-        self.initialize(packages)
-
-    def initialize(self, packages: Sequence[str]):
-        self.software_list = packages
-        if len(self.software_list) > 0:
-            self.selected_software = self.software_list[0]
-
-    @property
-    def software_list(self) -> Sequence[str]:
-        return self.__software_list
-
-    @software_list.setter
-    def software_list(self, items: Sequence[str]):
-        if isinstance(items, (list, tuple)):
-            for item in items:
-                if not isinstance(item, str):
-                    return
-            if len(items) == len(self.software_list):
-                equal = True
-                for a, b in zip(items, self.software_list):
-                    if a != b:
-                        equal = False
-                        break
-                if equal:
-                    return
-            self.__software_list = items
+    def update(self):
+        self.model.update()
 
     @property
-    def selected_software(self) -> str:
-        return self.__selected_software
+    def model(self) -> SwitchEnvironmentDialogModel:
+        return self.__model
 
-    @selected_software.setter
-    def selected_software(self, value: str):
-        if isinstance(value, str) and value != self.selected_software:
-            self.__selected_software = value
-            self.selected_software_changed.emit()
+    def get_software_path_list(self) -> List[str]:
+        return self.__software_path_list
 
-    @Slot(int)
-    def set_selected_software_package(self, index: int):
-        if 0 <= index < len(self.software_list):
-            self.selected_software = self.software_list[index]
+    def set_software_path_list(self, items: List[str]):
+        if self.software_path_list != items:
+            self.__software_path_list = items
+            self.software_path_list_changed.emit(self.software_path_list)
 
-    @property
-    def current_environment(self) -> str:
-        return self.__current_environment
+    software_path_list = Property(
+        type(List[str]),
+        fget=get_software_path_list,
+        fset=set_software_path_list,
+        notify=software_path_list_changed
+    )
 
-    @current_environment.setter
-    def current_environment(self, value):
-        value_str = value
-        if not isinstance(value, str):
-            value_str = environment_to_string(value)
-        if isinstance(value_str, str) and value_str != self.current_environment:
-            self.__current_environment = value_str
-            self.current_environment_changed.emit(self.current_environment)
+    def get_current_software_path_index(self) -> int:
+        return self.__current_software_path_index
 
-    @Slot()
-    def update_current_environment(self):
-        self.current_environment = infer_environment(self.selected_software)
+    def set_current_software_path_index(self, value: int):
+        if value != self.current_software_path_index:
+            self.__current_software_path_index = value
+            self.current_software_path_index_changed.emit(self.current_software_path_index)
 
-    @property
-    def environment_options(self) -> List[EnvironmentOption]:
+    current_software_path_index = Property(
+        int,
+        fget=get_current_software_path_index,
+        fset=set_current_software_path_index,
+        notify=current_software_path_index_changed
+    )
+
+    def get_environment_options(self) -> List[EnvironmentOption]:
         return self.__environment_options
 
-    @environment_options.setter
-    def environment_options(self, opts: List[EnvironmentOption]):
+    def set_environment_options(self, opts: List[EnvironmentOption]):
         if self.environment_options != opts:
             self.__environment_options = opts
-            self.environment_options_changed.emit()
+            self.environment_options_changed.emit(self.environment_options)
 
-    @Slot(str)
-    def update_environment_options(self, current_environment: str):
-        new_env_opts: List[EnvironmentOption] = [
-            EnvironmentOption(Environment.A, 'A', True, False),
-            EnvironmentOption(Environment.B, 'B', True, False),
-            EnvironmentOption(Environment.C, 'C', True, False),
-            EnvironmentOption(Environment.QA, 'QA', True, False),
-            EnvironmentOption(Environment.QA_STG, 'QA STG', True, False)
+    environment_options = Property(
+        type(List[EnvironmentOption]),
+        fget=get_environment_options,
+        fset=set_environment_options,
+        notify=environment_options_changed
+    )
+
+    def request_switching_current_software(self, index: int):
+        self.model.current_software_path = self.model.software_path_list[index]
+
+    def request_updating_environment_options(self):
+        self.model.update_current_software_environment()
+
+    @Slot(type(List[str]))
+    def __on_model_software_path_list_changed(self, software_path_list: List[str]):
+        self.software_path_list = software_path_list
+
+    @Slot(type(Union[str, None]))
+    def __on_model_current_software_path_changed(self, current_software_path: Union[str, None]):
+        if current_software_path is None:
+            self.current_software_path_index = -1
+        else:
+            self.current_software_path_index = self.software_path_list.index(current_software_path)
+
+    @Slot(type(Union[Environment, None]))
+    def __on_model_current_environment_changed(self, current_environment: Union[Environment, None]):
+        new_environment_options: List[EnvironmentOption] = [
+            EnvironmentOption(Environment.A, 'A', True),
+            EnvironmentOption(Environment.B, 'B', True),
+            EnvironmentOption(Environment.C, 'C', True),
+            EnvironmentOption(Environment.QA, 'QA', True),
+            EnvironmentOption(Environment.QA_STG, 'QA STG', True)
         ]
-        current_environment_index: int = 0
-        for index, env_opt in enumerate(new_env_opts):
-            if env_opt.name == current_environment:
-                env_opt.enabled = False
-                current_environment_index = index
-                break
-        new_env_opts[(current_environment_index + 1) % len(new_env_opts)].checked = True
-        self.environment_options = new_env_opts
+        for new_environment_option in new_environment_options:
+            if new_environment_option.environment == current_environment:
+                new_environment_option.enabled = False
+        self.environment_options = new_environment_options
 
-    def set_environment_option_checked(self, env_name: str):
-        new_env_opts = deepcopy(self.environment_options)
-        for env_opt in new_env_opts:
-            env_opt.checked = env_opt.name == env_name
-        self.environment_options = new_env_opts
 
-    def get_target_environment(self) -> Environment:
-        for env in self.environment_options:
-            if env.checked:
-                return env.environment
-        return Environment.QA
+class EnvironmentButton(QPushButton):
+
+    request_switching_environment = Signal(Environment)
+
+    def __init__(self, environment: Environment, name: str, parent: Optional[QWidget] = None):
+        super().__init__(parent)
+        self.setText(name)
+        self.__environment = environment
+        self.clicked.connect(self.__on_clicked)
+
+    @Slot()
+    def __on_clicked(self):
+        self.request_switching_environment.emit(self.__environment)
 
 
 class SwitchEnvironmentDialogView(object):
 
-    def __init__(self, dialog: QDialog, vm: SwitchEnvironmentDialogViewModel):
+    def __init__(self, dialog: QDialog):
         dialog.setWindowTitle('Switch Environment')
-        dialog.setFixedHeight(160)
+        dialog.setWindowIcon(QIcon(get_image_path('cat-48')))
+        dialog.setFixedHeight(68)
         dialog.setMinimumWidth(800)
 
         title_width = 150
-        self.software_title = create_row_title('Software', width=title_width)
+        self.software_title = create_row_title('Software Package', width=title_width)
         self.software_selector = QComboBox()
-        self.software_selector.addItems(vm.software_list)
-        self.software_selector.setCurrentText(vm.selected_software)
         self.software_layout = create_row_layout(self.software_selector, self.software_title)
 
-        self.current_environment_title = create_row_title('Current Environment', width=title_width)
-        self.current_environment_input = QLineEdit()
-        self.current_environment_input.setEnabled(False)
-        self.current_environment_input.setText(vm.current_environment)
-        self.current_environment_layout = create_row_layout(
-            self.current_environment_input, self.current_environment_title)
-
-        self.target_environment_title = create_row_title('Target Environment', width=title_width)
-        self.radio_of_a = self.__create_environment_option_radio_button('A')
-        self.radio_of_b = self.__create_environment_option_radio_button('B', True)
-        self.radio_of_c = self.__create_environment_option_radio_button('C', True)
-        self.radio_of_qa = self.__create_environment_option_radio_button('QA', True)
-        self.radio_of_qa_stg = self.__create_environment_option_radio_button('QA STG', True)
-        environment_option_radio_buttons = [
-            self.radio_of_a, self.radio_of_b, self.radio_of_c, self.radio_of_qa, self.radio_of_qa_stg]
-        self.__update_environment_options(
-            environment_option_radio_buttons,
-            vm.environment_options
-        )
+        self.target_environment_title = create_row_title('Expected Environment', width=title_width)
+        self.button_a = self.create_environment_button(Environment.A, 'A')
+        self.button_b, self.spacer_b = self.create_environment_button(Environment.B, 'B', True)
+        self.button_c, self.spacer_c = self.create_environment_button(Environment.C, 'C', True)
+        self.button_qa, self.spacer_qa = self.create_environment_button(Environment.QA, 'QA', True)
+        self.button_qa_stg, self.spacer_qa_stg = self.create_environment_button(Environment.QA_STG, 'QA STG', True)
         self.target_environment_layout = create_row_layout(
             title=self.target_environment_title,
-            widgets=environment_option_radio_buttons,
+            widgets=[
+                self.button_a,
+                self.spacer_b, self.button_b,
+                self.spacer_c, self.button_c,
+                self.spacer_qa, self.button_qa,
+                self.spacer_qa_stg, self.button_qa_stg
+            ],
             append_spacer=True
         )
 
-        self.vertical_spacer = QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.run_button = QPushButton('Run')
-
         self.layout = create_column_layout([
             self.software_layout,
-            self.current_environment_layout,
-            self.target_environment_layout,
-            self.vertical_spacer,
-            self.run_button
+            self.target_environment_layout
         ])
         self.layout.setContentsMargins(8, 8, 8, 8)
         dialog.setLayout(self.layout)
 
     @staticmethod
-    def __create_environment_option_radio_button(text: str, indent: Optional[bool] = False) -> QRadioButton:
-        radio = QRadioButton(text)
+    def create_environment_button(environment: Environment, text: str, indent: Optional[bool] = False)\
+            -> Union[EnvironmentButton, Tuple[EnvironmentButton, QSpacerItem]]:
+        button = EnvironmentButton(environment, text)
+        button.setFixedWidth(96)
+        button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         if indent:
-            radio.setStyleSheet('QRadioButton { margin-left: 24px; }')
-        return radio
-
-    @staticmethod
-    def __update_environment_option(radio: QRadioButton, environment: EnvironmentOption):
-        radio.setChecked(environment.checked)
-        radio.setEnabled(environment.enabled)
-
-    @staticmethod
-    def __update_environment_options(radios: Sequence[QRadioButton], environment_options: Sequence[EnvironmentOption]):
-        for radio, env_opt in zip(radios, environment_options):
-            SwitchEnvironmentDialogView.__update_environment_option(radio, env_opt)
-
-    def update_environment_options(self, env_options: Sequence[EnvironmentOption]):
-        self.__update_environment_options(
-            [self.radio_of_a, self.radio_of_b, self.radio_of_c, self.radio_of_qa, self.radio_of_qa_stg],
-            env_options
-        )
+            spacer = QSpacerItem(8, 0, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
+            return button, spacer
+        else:
+            return button
 
 
 class SwitchEnvironmentTask(object):
@@ -289,45 +357,63 @@ class SwitchEnvironmentTask(object):
 
 class SwitchEnvironmentDialog(DialogBase):
 
-    def __init__(self, packages: Sequence[str], task: SwitchEnvironmentTask, parent: Optional[QWidget] = None):
+    def __init__(self, task: SwitchEnvironmentTask, parent: Optional[QWidget] = None):
         super().__init__(object_name='94edc04c-e7af-452e-b2ca-4626db52e8e2', parent=parent)
-        self.vm = SwitchEnvironmentDialogViewModel(packages, self)
-        self.ui = SwitchEnvironmentDialogView(self, self.vm)
+        self.vm = SwitchEnvironmentDialogViewModel(self)
+        self.ui = SwitchEnvironmentDialogView(self)
         self.task = task
 
-        self.vm.current_environment_changed.connect(self.ui.current_environment_input.setText)
+    def initialize(self):
+        # signals from view model
+        self.vm.software_path_list_changed.connect(self.__on_vm_software_path_list_changed)
+        self.vm.current_software_path_index_changed.connect(self.__on_vm_current_software_path_index_changed)
         self.vm.environment_options_changed.connect(self.__on_vm_environment_options_changed)
+        # signals from ui
+        self.ui.software_selector.currentIndexChanged.connect(self.__on_ui_current_environment_index_changed)
+        self.ui.button_a.request_switching_environment.connect(self.__on_ui_environment_button_clicked)
+        self.ui.button_b.request_switching_environment.connect(self.__on_ui_environment_button_clicked)
+        self.ui.button_c.request_switching_environment.connect(self.__on_ui_environment_button_clicked)
+        self.ui.button_qa.request_switching_environment.connect(self.__on_ui_environment_button_clicked)
+        self.ui.button_qa_stg.request_switching_environment.connect(self.__on_ui_environment_button_clicked)
+        # initialize members
+        self.vm.initialize()
 
-        self.ui.software_selector.currentIndexChanged.connect(self.vm.set_selected_software_package)
-        self.ui.radio_of_a.clicked.connect(self.__on_ui_environment_option_check_state_changed)
-        self.ui.radio_of_b.clicked.connect(self.__on_ui_environment_option_check_state_changed)
-        self.ui.radio_of_c.clicked.connect(self.__on_ui_environment_option_check_state_changed)
-        self.ui.radio_of_qa.clicked.connect(self.__on_ui_environment_option_check_state_changed)
-        self.ui.radio_of_qa_stg.clicked.connect(self.__on_ui_environment_option_check_state_changed)
-        self.ui.run_button.clicked.connect(self.__on_ui_run_button_clicked)
+    @Slot(type(List[str]))
+    def __on_vm_software_path_list_changed(self, software_path_list: List[str]):
+        self.ui.software_selector.clear()
+        self.ui.software_selector.addItems(software_path_list)
 
-    @Slot()
-    def __on_vm_environment_options_changed(self):
-        self.ui.update_environment_options(self.vm.environment_options)
+    @Slot(int)
+    def __on_vm_current_software_path_index_changed(self, current_software_index: int):
+        self.ui.software_selector.setCurrentIndex(current_software_index)
 
-    @Slot()
-    def __on_ui_environment_option_check_state_changed(self):
-        sender = self.sender()
-        if isinstance(sender, QRadioButton) and sender.isChecked():
-            self.vm.set_environment_option_checked(sender.text())
+    @Slot(type(List[EnvironmentOption]))
+    def __on_vm_environment_options_changed(self, environment_options: List[EnvironmentOption]):
+        buttons: List[EnvironmentButton] = [
+            self.ui.button_a, self.ui.button_b, self.ui.button_c, self.ui.button_qa, self.ui.button_qa_stg
+        ]
+        for index in range(len(buttons)):
+            environment_option = environment_options[index]
+            environment_button = buttons[index]
+            environment_button.setText(environment_option.name)
+            environment_button.setEnabled(environment_option.enabled)
 
-    @Slot()
-    def __on_ui_run_button_clicked(self):
-        self.task.set_software_package_directory(self.vm.selected_software)
-        self.task.set_target_environment(self.vm.get_target_environment())
+    @Slot(int)
+    def __on_ui_current_environment_index_changed(self, current_environment_index: int):
+        self.vm.request_switching_current_software(current_environment_index)
+
+    @Slot(Environment)
+    def __on_ui_environment_button_clicked(self, expected_environment: Environment):
+        self.task.set_software_package_directory(self.vm.model.current_software_path)
+        self.task.set_target_environment(expected_environment)
         self.task.run()
-        self.vm.update_current_environment()
+        self.vm.request_updating_environment_options()
 
 
 class SwitchEnvironmentCommand(ICommand):
 
     def exec(self, *args, **kwargs):
-        packages = detect_software_packages()
         task = SwitchEnvironmentTask()
-        dialog = SwitchEnvironmentDialog(packages, task)
+        dialog = SwitchEnvironmentDialog(task)
+        dialog.initialize()
         dialog.exec()

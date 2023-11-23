@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-from .base import ApplicationBase, MainWindowBase, DialogBase
+from .base import ApplicationBase, MainWindowBase, DialogBase, WidgetViewModelBase, WidgetModelBase
