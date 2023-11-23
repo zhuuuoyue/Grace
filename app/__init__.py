@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from service.context import Context
+from shared.context import Context
 from command import register_command
 
 from ui.cache import initialize_ui_cache

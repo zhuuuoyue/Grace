@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from command import register_command
-from service.context import Context
+from shared.context import Context
 from app import ActionData, MainWindow
 
 from .CleanLogFiles import CleanLogFilesCommand

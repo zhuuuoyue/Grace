@@ -7,7 +7,7 @@ from importlib import import_module
 
 from PySide6.QtWidgets import QTableWidget, QWidget, QDialog, QVBoxLayout, QTableWidgetItem
 
-from service.context import Context
+from shared.context import Context
 
 
 class ExtensionType(IntEnum):

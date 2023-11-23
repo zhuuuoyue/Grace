@@ -86,7 +86,7 @@ pipenv install
 通过 `initialize` 初始化函数来注册拓展模块，`initialize` 函数原型为：
 
 ```python
-from service.context import Context
+from shared.context import Context
 
 
 def initialize(ctx: Context):
@@ -105,7 +105,7 @@ def initialize(ctx: Context):
 
 ```python
 from command import register_command
-from service.context import Context
+from shared.context import Context
 from ui import Action, MainWindow
 
 from .hello import HelloCommand

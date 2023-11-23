@@ -4,7 +4,7 @@ import os
 import shutil
 from typing import Optional, Sequence, List
 
-from service import get_searcher, SearcherType, ISearcher
+from shared import get_searcher, SearcherType, ISearcher
 
 
 def detect_software_packages(
