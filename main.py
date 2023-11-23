@@ -33,13 +33,13 @@ def load_menus() -> Sequence[app.MenuData]:
 
 
 if __name__ == '__main__':
+    application = app.Application(sys.argv)
+
     context.initialize(os.getcwd())
     ctx = context.get_context()
     db.initialize(ctx.data_file_path)
     app.initialize(ctx)
     menus = load_menus()
-
-    application = app.Application(sys.argv)
 
     window = app.MainWindow(menus)
     window.show()
