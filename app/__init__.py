@@ -18,6 +18,7 @@ def _register_commands():
     # create
     register_command('cmd_edit_template', EditTemplateCommand())
     register_command('cmd_edit_creation_solutions', EditCreationSolutionsCommand())
+    register_command('cmd_create_using_template', CreateUsingTemplateCommand())
 
 
 def initialize(ctx: Context):

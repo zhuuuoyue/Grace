@@ -41,6 +41,12 @@
                     "tooltip": ""
                 },
                 {
+                    "command_id": "cmd_create_using_template",
+                    "title": "Create Using Template",
+                    "icon": "",
+                    "tooltip": ""
+                },
+                {
                     "command_id": "cmd_create_using_creation_solution",
                     "title": "Create",
                     "icon": "create-documents",
