@@ -7,7 +7,7 @@ from PySide6.QtCore import Qt, QObject
 from PySide6.QtWidgets import QDialog, QMainWindow, QWidget, QApplication
 from PySide6.QtGui import QCloseEvent
 
-from .cache import update_dialog_geometry, update_dialog_geometry_cache, flush_ui_cache
+from .cache import update_dialog_geometry, update_dialog_geometry_cache
 
 
 class WidgetModelBase(QObject):
@@ -60,8 +60,7 @@ class MainWindowBase(QMainWindow):
         update_dialog_geometry(self)
 
     def closeEvent(self, event: QCloseEvent) -> None:
-        update_dialog_geometry_cache(self)
-        flush_ui_cache()
+        update_dialog_geometry_cache(self, True)
         super().closeEvent(event)
 
 
