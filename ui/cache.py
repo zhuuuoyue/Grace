@@ -10,29 +10,45 @@ from PySide6.QtWidgets import QDialog, QMainWindow
 
 class DialogGeometry(object):
 
-    _KEY_LEFT = 'left'
-    _KEY_TOP = 'top'
-    _KEY_WIDTH = 'width'
-    _KEY_HEIGHT = 'height'
-
     def __init__(self, position: QPoint, size: QSize):
         self.position: QPoint = position
         self.size: QSize = size
 
-    @staticmethod
-    def from_dict(data: Dict[str, int]):
-        return DialogGeometry(
-            position=QPoint(data[DialogGeometry._KEY_LEFT], data[DialogGeometry._KEY_TOP]),
-            size=QSize(data[DialogGeometry._KEY_WIDTH], data[DialogGeometry._KEY_HEIGHT])
-        )
 
-    def to_dict(self) -> Dict[str, int]:
-        return {
-            DialogGeometry._KEY_LEFT: self.position.x(),
-            DialogGeometry._KEY_TOP: self.position.y(),
-            DialogGeometry._KEY_WIDTH: self.size.width(),
-            DialogGeometry._KEY_HEIGHT: self.size.height()
-        }
+_KEY_LEFT = 'left'
+_KEY_TOP = 'top'
+_KEY_WIDTH = 'width'
+_KEY_HEIGHT = 'height'
+
+
+def validate_dialog_geometry_data(data: Dict[str, int]) -> bool:
+    if not isinstance(data, dict):
+        return False
+    keys = [_KEY_LEFT, _KEY_TOP, _KEY_WIDTH, _KEY_HEIGHT]
+    for key in keys:
+        if key not in data:
+            return False
+        if not isinstance(data[key], int):
+            return False
+    return True
+
+
+def dict_to_dialog_geometry(data: Dict[str, int]) -> Union[DialogGeometry, None]:
+    if not validate_dialog_geometry_data(data):
+        return None
+    return DialogGeometry(
+        position=QPoint(data[_KEY_LEFT], data[_KEY_TOP]),
+        size=QSize(data[_KEY_WIDTH], data[_KEY_HEIGHT])
+    )
+
+
+def dialog_geometry_to_dict(dialog_geometry: DialogGeometry) -> Dict[str, int]:
+    return {
+        _KEY_LEFT: dialog_geometry.position.x(),
+        _KEY_TOP: dialog_geometry.position.y(),
+        _KEY_WIDTH: dialog_geometry.size.width(),
+        _KEY_HEIGHT: dialog_geometry.size.height()
+    }
 
 
 class UICache(object):
@@ -70,7 +86,9 @@ class UICache(object):
                 dialog_geometry_cache = raw_data[UICache._DIALOG_GEOMETRY_KEY]
                 for key in dialog_geometry_cache:
                     value = dialog_geometry_cache[key]
-                    self.__dialog_geometry_cache[key] = DialogGeometry.from_dict(value)
+                    data = dict_to_dialog_geometry(value)
+                    if data is not None:
+                        self.__dialog_geometry_cache[key] = data
 
     def save(self):
         if not os.path.isdir(self.__cache_directory):
@@ -83,7 +101,7 @@ class UICache(object):
             dialog_geometry_records = dict()
             for dialog_geometry_key in self.__dialog_geometry_cache:
                 dialog_geometry_value = self.__dialog_geometry_cache[dialog_geometry_key]
-                dialog_geometry_records[dialog_geometry_key] = dialog_geometry_value.to_dict()
+                dialog_geometry_records[dialog_geometry_key] = dialog_geometry_to_dict(dialog_geometry_value)
             to_write[UICache._DIALOG_GEOMETRY_KEY] = dialog_geometry_records
 
             text = json.dumps(to_write, indent=4)

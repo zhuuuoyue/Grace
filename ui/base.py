@@ -1,12 +1,41 @@
 # -*- coding: utf-8 -*-
 
+from abc import abstractmethod
 from typing import Optional, Sequence
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QObject
 from PySide6.QtWidgets import QDialog, QMainWindow, QWidget, QApplication
 from PySide6.QtGui import QCloseEvent
 
 from .cache import update_dialog_geometry, update_dialog_geometry_cache, flush_ui_cache
+
+
+class WidgetModelBase(QObject):
+
+    def __init__(self, parent: Optional[QObject] = None):
+        super().__init__(parent)
+
+    @abstractmethod
+    def initialize(self):
+        pass
+
+    @abstractmethod
+    def update(self):
+        pass
+
+
+class WidgetViewModelBase(QObject):
+
+    def __init__(self, parent: Optional[QObject] = None):
+        super().__init__(parent)
+
+    @abstractmethod
+    def initialize(self):
+        pass
+
+    @abstractmethod
+    def update(self):
+        pass
 
 
 class DialogBase(QDialog):
