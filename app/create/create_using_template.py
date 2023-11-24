@@ -5,16 +5,15 @@ from typing import Optional, Sequence, Union, List
 
 from PySide6.QtCore import QObject, Slot, Signal, Property, Qt, QSignalBlocker
 from PySide6.QtWidgets import (
-    QApplication, QWidget, QDialog, QComboBox, QTableWidget, QTableWidgetItem, QPlainTextEdit,
-    QHBoxLayout, QVBoxLayout, QSpacerItem, QSizePolicy
+    QApplication, QWidget, QDialog, QComboBox, QTableWidget, QTableWidgetItem, QPlainTextEdit, QLabel,
+    QLayout, QHBoxLayout, QVBoxLayout, QSpacerItem, QSizePolicy
 )
-from PySide6.QtGui import QClipboard
 
 from command import ICommand
 from tasks.create import TemplateData, EditTemplateTasks, extract_parameters, complete_template
 
 from ui import DialogBase, WidgetViewModelBase, WidgetModelBase
-from ui.utils import create_no_focus_tool_button, add_layout_children
+from ui.utils import create_no_focus_tool_button, add_layout_children, create_column_layout
 
 
 class Parameter(object):
@@ -265,6 +264,11 @@ class CreateUsingTemplateView(object):
     def __init__(self, dialog: QDialog):
         dialog.setWindowTitle('Create Using Template')
         dialog.setSizeGripEnabled(True)
+        dialog.setMinimumSize(1000, 800)
+
+        self.preview_panel_title = self.create_panel_title('Preview')
+        self.button_copy = create_no_focus_tool_button('clipboard', 'Copy generated content')
+        self.preview_panel_title_layout = self.create_panel_title_layout([self.preview_panel_title, self.button_copy])
 
         self.preview = QPlainTextEdit()
         self.preview.setStyleSheet(
@@ -274,24 +278,22 @@ class CreateUsingTemplateView(object):
             '''
         )
 
+        self.left_layout = create_column_layout([self.preview_panel_title_layout, self.preview])
+
+        self.template_title = self.create_panel_title('Select Template')
         self.template_selector = QComboBox()
+
+        self.spacer_before_parameter_table = QSpacerItem(0, 48, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+
+        self.parameter_table_title = self.create_panel_title('Edit Parameters')
+        self.button_clean = create_no_focus_tool_button('clean', 'Clean parameter values')
+        self.parameter_table_title_layout = self.create_panel_title_layout([self.parameter_table_title, self.button_clean])
 
         self.parameter_table = QTableWidget()
         self.parameter_table.setColumnCount(2)
         self.parameter_table.setHorizontalHeaderLabels(['Parameter', 'Value'])
 
-        self.button_copy = create_no_focus_tool_button('copy', 'Copy generated content')
-        self.button_clean = create_no_focus_tool_button('clean', 'Clean parameter values')
-        self.button_spacer = QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        self.button_layout = QHBoxLayout()
-        self.button_layout.setContentsMargins(0, 0, 0, 0)
-        self.button_layout.setSpacing(8)
-        add_layout_children(self.button_layout, [self.button_copy, self.button_clean, self.button_spacer])
-
-        self.right_layout = QVBoxLayout()
-        self.right_layout.setContentsMargins(0, 0, 0, 0)
-        self.right_layout.setSpacing(4)
-        add_layout_children(self.right_layout, [self.template_selector, self.parameter_table, self.button_layout])
+        self.right_layout = create_column_layout([self.template_title, self.template_selector, self.spacer_before_parameter_table, self.parameter_table_title_layout, self.parameter_table])
 
         self.right_widget = QWidget()
         self.right_widget.setFixedWidth(280)
@@ -299,9 +301,24 @@ class CreateUsingTemplateView(object):
 
         self.layout = QHBoxLayout()
         self.layout.setContentsMargins(8, 8, 8, 8)
-        self.layout.setSpacing(8)
-        add_layout_children(self.layout, [self.preview, self.right_widget])
+        self.layout.setSpacing(16)
+        add_layout_children(self.layout, [self.left_layout, self.right_widget])
         dialog.setLayout(self.layout)
+
+    @staticmethod
+    def create_panel_title(text: str) -> QLabel:
+        label = QLabel()
+        label.setText(text)
+        label.setFixedHeight(22)
+        return label
+
+    @staticmethod
+    def create_panel_title_layout(children: Sequence[Union[QWidget, QLayout, QSpacerItem]]) -> QHBoxLayout:
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(8)
+        add_layout_children(layout, children)
+        return layout
 
 
 class CreateUsingTemplateDialog(DialogBase):
