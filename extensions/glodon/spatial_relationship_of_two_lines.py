@@ -8,6 +8,7 @@ import numpy as np
 from shapely import Point, MultiPoint
 from PySide6.QtCore import Qt, Slot, Signal, Property, QObject
 from PySide6.QtWidgets import QDialog, QWidget, QLineEdit, QLabel, QSlider, QHBoxLayout
+from PySide6.QtGui import QCloseEvent
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.pyplot import Line2D
@@ -15,6 +16,7 @@ from matplotlib.pyplot import Line2D
 from command import ICommand
 from ui import WidgetModelBase, WidgetViewModelBase, DialogBase
 from ui.utils import create_row_title, create_row_layout, create_column_layout, add_layout_children
+from ui.cache import get_ui_cache
 
 
 class Line(object):
@@ -469,10 +471,26 @@ class SpatialRelationshipOfTwoLinesView(object):
 
 class SpatialRelationshipOfTwoLinesDialog(DialogBase):
 
+    __instance__ = None
+
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(object_name='6a69811c-e16c-43b9-b14d-7a10df891fd9', parent=parent)
         self.ui = SpatialRelationshipOfTwoLinesView(self)
         self.vm = SpatialRelationshipOfTwoLinesViewModel(self)
+
+    @staticmethod
+    def get_dialog():
+        if SpatialRelationshipOfTwoLinesDialog.__instance__ is None:
+            dialog = SpatialRelationshipOfTwoLinesDialog()
+            dialog.setWindowModality(Qt.WindowModality.NonModal)
+            dialog.initialize()
+            SpatialRelationshipOfTwoLinesDialog.__instance__ = dialog
+        return SpatialRelationshipOfTwoLinesDialog.__instance__
+
+    def closeEvent(self, event: QCloseEvent) -> None:
+        super().closeEvent(event)
+        SpatialRelationshipOfTwoLinesDialog.__instance__ = None
+        get_ui_cache().save()
 
     def initialize(self):
         self.ui.first_line_input.line_changed.connect(self.__on_first_line_changed)
@@ -501,6 +519,5 @@ class SpatialRelationshipOfTwoLinesDialog(DialogBase):
 class SpatialRelationshipOfTwoLinesCommand(ICommand):
 
     def exec(self, *args, **kwargs):
-        dialog = SpatialRelationshipOfTwoLinesDialog()
-        dialog.initialize()
-        dialog.exec()
+        dialog = SpatialRelationshipOfTwoLinesDialog.get_dialog()
+        dialog.show()
