@@ -27,7 +27,7 @@ class CreationDocumentEditorView(object):
         self.template_title = create_row_title(r'文档模板')
         self.template_selector = QComboBox()
         self.template_spacer = QSpacerItem(8, 0, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.preview_button = create_no_focus_tool_button('cat-48')
+        self.preview_button = create_no_focus_tool_button('')
         self.template_layout = create_row_layout(
             title=self.template_title,
             widgets=[self.template_selector, self.template_spacer, self.preview_button]

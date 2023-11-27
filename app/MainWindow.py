@@ -49,9 +49,9 @@ class MainWindow(MainWindowBase):
 
     def initialize(self, menus: Sequence[MenuData]):
         self.setWindowTitle('Grace - Make your programming graceful')
+        self.setWindowIcon(Icon('cat-eyes'))
         self.setFixedHeight(22)
         self.setMinimumWidth(512)
-        self.setWindowIcon(Icon())
 
         for menu_data in menus:
             menu = self.get_menu(menu_data.title)

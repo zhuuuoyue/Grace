@@ -14,7 +14,7 @@ class Icon(QIcon):
 
     def __init__(self, icon_id: Optional[str] = None):
         if icon_id is None or len(icon_id) == 0:
-            icon_path = get_image_path('cat-48')
+            icon_path = get_image_path('pixel-cat')
         else:
             icon_path = get_image_path(icon_id)
         super().__init__(icon_path)
