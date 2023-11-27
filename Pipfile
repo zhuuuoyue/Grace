@@ -8,6 +8,8 @@ pyside6 = "*"
 sqlalchemy = "*"
 gitpython = "*"
 everytools = "*"
+matplotlib = "*"
+shapely = "*"
 
 [dev-packages]
 
