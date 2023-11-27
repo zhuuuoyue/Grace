@@ -6,9 +6,8 @@ from PySide6.QtWidgets import (
     QWidget, QDialog, QLabel, QListView, QToolButton, QTreeView, QTableView,
     QHBoxLayout, QVBoxLayout, QSpacerItem, QSizePolicy
 )
-from PySide6.QtGui import QIcon
 
-from ui.utils import get_image_path
+from ui import Icon
 
 
 class EditRepositoriesView(object):
@@ -33,10 +32,10 @@ class EditRepositoriesView(object):
         self.repository_title = QLabel(r'仓库列表')
         self.repository_list = QListView()
         self.add_repository = QToolButton()
-        self.add_repository.setIcon(QIcon(get_image_path('add')))
+        self.add_repository.setIcon(Icon('add'))
         self.add_repository.setToolTip(r'添加仓库')
         self.remove_repository = QToolButton()
-        self.remove_repository.setIcon(QIcon(get_image_path('minus')))
+        self.remove_repository.setIcon(Icon('minus'))
         self.remove_repository.setToolTip(r'移除仓库')
         self.repository_button_layout = self.create_tool_button_bar([self.add_repository, self.remove_repository])
         self.repository_layout = self.create_panel_layout(

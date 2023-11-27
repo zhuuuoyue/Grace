@@ -6,11 +6,10 @@ from typing import Any, List, Optional, Union, Tuple
 
 from PySide6.QtCore import QObject, Signal, Slot, Property, Qt
 from PySide6.QtWidgets import QWidget, QDialog, QComboBox, QPushButton, QSpacerItem, QSizePolicy
-from PySide6.QtGui import QIcon
 
 from command import ICommand
-from ui import DialogBase, WidgetViewModelBase, WidgetModelBase
-from ui.utils import create_row_title, create_row_layout, create_column_layout, get_image_path
+from ui import DialogBase, WidgetViewModelBase, WidgetModelBase, Icon
+from ui.utils import create_row_title, create_row_layout, create_column_layout
 
 from .environment import Environment, infer_environment
 from .utils import detect_software_packages
@@ -252,7 +251,7 @@ class SwitchEnvironmentDialogView(object):
 
     def __init__(self, dialog: QDialog):
         dialog.setWindowTitle('Switch Environment')
-        dialog.setWindowIcon(QIcon(get_image_path('cat-48')))
+        dialog.setWindowIcon(Icon())
         dialog.setFixedHeight(68)
         dialog.setMinimumWidth(800)
 
