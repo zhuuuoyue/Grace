@@ -16,8 +16,6 @@ class EditCreationTemplatesView(object):
 
     def __init__(self, dialog: QDialog, vm: EditCreationTemplatesViewModel):
         dialog.setMinimumSize(800, 600)
-        dialog.setWindowTitle(r'编辑模板')
-        dialog.setWindowIcon(Icon('document'))
         dialog.setSizeGripEnabled(True)
 
         self.new_button = self.create_tool_button('add-file', 'New')

@@ -5,9 +5,10 @@ from enum import IntEnum, auto
 from typing import List, Sequence, Union, Optional
 from importlib import import_module
 
-from PySide6.QtWidgets import QTableWidget, QWidget, QDialog, QVBoxLayout, QTableWidgetItem
+from PySide6.QtWidgets import QTableWidget, QWidget, QVBoxLayout, QTableWidgetItem
 
 from shared.context import Context
+from ui import DialogBase
 
 
 class ExtensionType(IntEnum):
@@ -24,15 +25,15 @@ class LoadingResult(object):
         self.error: Union[Exception, None] = None
 
 
-class LoadingResultDialog(QDialog):
+class LoadingResultDialog(DialogBase):
 
     def __init__(self, result: Sequence[LoadingResult], parent: Optional[QWidget] = None):
-        super().__init__(parent)
+        super().__init__(object_name='d687873a-895b-462a-94c1-616e783f2291', parent=parent,
+                         window_title='Loading modules and packages')
         self.__initialize()
         self.__load_data(result)
 
     def __initialize(self):
-        self.setWindowTitle('Loading modules and packages')
         self.setMinimumSize(400, 320)
         self.__table = QTableWidget()
         self.__table.setColumnCount(4)

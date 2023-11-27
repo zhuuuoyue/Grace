@@ -7,8 +7,7 @@ from PySide6.QtCore import Qt, Slot
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QCloseEvent
 
-from ui import DialogBase
-from ui.cache import get_ui_cache
+from ui import DialogBase, flush_dialog_geometry_cache
 
 from .line_segment import LineSegment
 from .infer_spatial_relationship_view import InferSpatialRelationshipView
@@ -20,7 +19,8 @@ class InferSpatialRelationshipDialog(DialogBase):
     __instance__ = None
 
     def __init__(self, parent: Optional[QWidget] = None):
-        super().__init__(object_name='6a69811c-e16c-43b9-b14d-7a10df891fd9', parent=parent)
+        super().__init__(object_name='6a69811c-e16c-43b9-b14d-7a10df891fd9', parent=parent,
+                         window_title='Infer Spatial Relationship')
         self.__ui = InferSpatialRelationshipView(self)
         self.__vm = InferSpatialRelationshipViewModel(self)
 
@@ -36,7 +36,7 @@ class InferSpatialRelationshipDialog(DialogBase):
     def closeEvent(self, event: QCloseEvent) -> None:
         super().closeEvent(event)
         InferSpatialRelationshipDialog.__instance__ = None
-        get_ui_cache().save()
+        flush_dialog_geometry_cache()
 
     def initialize(self):
         # signals from view

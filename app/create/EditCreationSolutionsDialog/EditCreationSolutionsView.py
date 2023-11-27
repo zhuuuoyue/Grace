@@ -29,7 +29,6 @@ def create_no_focus_line_edit() -> QLineEdit:
 class EditCreationSolutionsView(object):
 
     def __init__(self, dialog: QDialog):
-        dialog.setWindowTitle(r'Edit Creation Solutions')
         dialog.setMinimumSize(1000, 600)
         dialog.setSizeGripEnabled(True)
 

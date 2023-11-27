@@ -14,7 +14,6 @@ class CleanLogFilesView(object):
 
     def __init__(self, dialog: QDialog, vm: CleanLogFilesViewModel):
         dialog.setFixedSize(600, 200)
-        dialog.setWindowTitle('Clean Log Files')
 
         self.repository_title = create_row_title('Repository', width=100)
         self.repository_selector = QComboBox()

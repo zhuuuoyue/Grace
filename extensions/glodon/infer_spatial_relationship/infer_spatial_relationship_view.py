@@ -15,7 +15,6 @@ from .line_segment_visualizer import LineSegmentVisualizer
 class InferSpatialRelationshipView(object):
 
     def __init__(self, dialog: QDialog):
-        dialog.setWindowTitle(r'Infer Spatial Relationship')
         dialog.setFixedSize(616, 760)
 
         self.visualizer = LineSegmentVisualizer()

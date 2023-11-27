@@ -18,7 +18,8 @@ from .EditCreationSolutionsViewModel import EditCreationSolutionsViewModel
 class EditCreationSolutionsDialog(DialogBase):
 
     def __init__(self, parent: Optional[QWidget] = None):
-        super().__init__(object_name='b870dbad-9d26-4d6f-8315-d4569ed635ed', parent=parent)
+        super().__init__(object_name='b870dbad-9d26-4d6f-8315-d4569ed635ed', parent=parent,
+                         window_title='Edit Creation Solutions')
         self.__ui = EditCreationSolutionsView(self)
         self.__vm = EditCreationSolutionsViewModel(self)
         self.__ui.solution_list.setModel(self.__vm.solution_list_model)

@@ -13,7 +13,6 @@ from app.create.CreationTemplateViewer import CreationTemplateViewer
 class CreationDocumentEditorView(object):
 
     def __init__(self, dialog: QDialog):
-        dialog.setWindowTitle(r'模板文档编辑器')
         dialog.setSizeGripEnabled(True)
 
         self.relative_path_title = create_row_title(r'相对路径')

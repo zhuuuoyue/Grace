@@ -11,7 +11,6 @@ from .CreationTemplateEditorViewModel import CreationTemplateEditorViewModel
 class CreationTemplateEditorView(object):
 
     def __init__(self, dialog: QDialog, vm: CreationTemplateEditorViewModel):
-        dialog.setWindowTitle(r'模板编辑器')
         dialog.setMinimumSize(400, 300)
         dialog.resize(600, 400)
         dialog.setSizeGripEnabled(True)

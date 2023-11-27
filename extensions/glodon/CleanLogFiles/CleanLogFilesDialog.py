@@ -15,7 +15,8 @@ from .CleanLogFilesView import CleanLogFilesView
 class CleanLogFilesDialog(DialogBase):
 
     def __init__(self, parent: Optional[QWidget] = None):
-        super().__init__(object_name='59d1f09f-9216-46d6-9d47-ef1b8a3cb217', parent=parent)
+        super().__init__(object_name='59d1f09f-9216-46d6-9d47-ef1b8a3cb217', parent=parent,
+                         window_title='Clean Log Files')
         self.__vm = CleanLogFilesViewModel(self)
         self.__ui = CleanLogFilesView(self, self.__vm)
 

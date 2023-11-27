@@ -250,8 +250,6 @@ class EnvironmentButton(QPushButton):
 class SwitchEnvironmentDialogView(object):
 
     def __init__(self, dialog: QDialog):
-        dialog.setWindowTitle('Switch Environment')
-        dialog.setWindowIcon(Icon())
         dialog.setFixedHeight(68)
         dialog.setMinimumWidth(800)
 
@@ -357,7 +355,8 @@ class SwitchEnvironmentTask(object):
 class SwitchEnvironmentDialog(DialogBase):
 
     def __init__(self, task: SwitchEnvironmentTask, parent: Optional[QWidget] = None):
-        super().__init__(object_name='94edc04c-e7af-452e-b2ca-4626db52e8e2', parent=parent)
+        super().__init__(object_name='94edc04c-e7af-452e-b2ca-4626db52e8e2', parent=parent,
+                         window_title='Switch Environment')
         self.vm = SwitchEnvironmentDialogViewModel(self)
         self.ui = SwitchEnvironmentDialogView(self)
         self.task = task

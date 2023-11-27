@@ -44,12 +44,11 @@ class MainWindow(MainWindowBase):
 
     def __init__(self, menus: Sequence[MenuData], parent: Optional[QWidget] = None,
                  flags: Qt.WindowType = Qt.WindowType.Window):
-        super().__init__(object_name='AE4FD4EA-66E5-421A-B944-410E17E260DF', parent=parent, flags=flags)
+        super().__init__(object_name='AE4FD4EA-66E5-421A-B944-410E17E260DF', parent=parent, flags=flags,
+                         window_icon='cat-eyes', window_title='Grace - Make your programming graceful')
         self.initialize(menus)
 
     def initialize(self, menus: Sequence[MenuData]):
-        self.setWindowTitle('Grace - Make your programming graceful')
-        self.setWindowIcon(Icon('cat-eyes'))
         self.setFixedHeight(22)
         self.setMinimumWidth(512)
 

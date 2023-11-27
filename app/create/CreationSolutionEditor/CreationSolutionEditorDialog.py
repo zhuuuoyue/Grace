@@ -13,7 +13,8 @@ from .CreationSolutionEditorView import CreationSolutionEditorView
 class CreationSolutionEditorDialog(DialogBase):
 
     def __init__(self, existing_solution_names: Optional[Set[str]] = None, parent: Optional[QWidget] = None):
-        super().__init__(object_name='266f570c-8822-4e66-a4aa-5758f0c85b2a', parent=parent)
+        super().__init__(object_name='266f570c-8822-4e66-a4aa-5758f0c85b2a', parent=parent,
+                         window_title='Solution Editor')
         self.__ui = CreationSolutionEditorView(self)
         self.__existing_solution_names: Set[str] = set() if existing_solution_names is None else existing_solution_names
 

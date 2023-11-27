@@ -262,7 +262,6 @@ class CreateUsingTemplateViewModel(WidgetViewModelBase):
 class CreateUsingTemplateView(object):
 
     def __init__(self, dialog: QDialog):
-        dialog.setWindowTitle('Create Using Template')
         dialog.setSizeGripEnabled(True)
         dialog.setMinimumSize(1000, 800)
 
@@ -324,7 +323,8 @@ class CreateUsingTemplateView(object):
 class CreateUsingTemplateDialog(DialogBase):
 
     def __init__(self, parent: Optional[QWidget] = None):
-        super().__init__(object_name='a6de0969-8678-46e8-8eb2-4eb1fe551d16', parent=parent)
+        super().__init__(object_name='a6de0969-8678-46e8-8eb2-4eb1fe551d16', parent=parent,
+                         window_title='Create Using Template')
         self.ui = CreateUsingTemplateView(self)
         self.vm = CreateUsingTemplateViewModel(self)
 

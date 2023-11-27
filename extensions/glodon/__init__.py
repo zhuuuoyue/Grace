@@ -27,4 +27,5 @@ def initialize(ctx: Context):
                                         tooltip='Switch runtime environment'))
         win.add_action(menu, ActionData(command_id='cmd_infer_spatial_relationship',
                                         title='Infer Spatial Relationship',
+                                        icon='perpendicular',
                                         tooltip='Infer spatial relationship of two given line segments'))

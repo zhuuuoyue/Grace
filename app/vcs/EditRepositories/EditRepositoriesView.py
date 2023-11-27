@@ -22,7 +22,6 @@ class EditRepositoriesView(object):
         self.layout.addLayout(self.branch_layout)
         self.layout.addLayout(self.detail_layout)
 
-        dialog.setWindowTitle(r'编辑仓库和分支信息')
         dialog.setMinimumSize(600, 400)
         dialog.resize(600, 400)
         dialog.setSizeGripEnabled(True)

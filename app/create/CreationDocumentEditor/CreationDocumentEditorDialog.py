@@ -15,7 +15,8 @@ from .CreationDocumentEditorViewModel import CreationDocumentEditorViewModel
 class CreationDocumentEditorDialog(DialogBase):
 
     def __init__(self, parent: Optional[QWidget] = None):
-        super().__init__(object_name='24691d7f-5fe5-45bb-82f0-cafdc03a3585', parent=parent)
+        super().__init__(object_name='24691d7f-5fe5-45bb-82f0-cafdc03a3585', parent=parent,
+                         window_title='Document Editor')
         self.__ui = CreationDocumentEditorView(self)
         self.__vm = CreationDocumentEditorViewModel(self)
         self.__load_data()

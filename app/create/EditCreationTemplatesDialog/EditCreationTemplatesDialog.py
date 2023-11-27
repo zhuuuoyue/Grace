@@ -17,7 +17,8 @@ from app.create.CreationTemplateEditor import CreationTemplateEditor
 class EditCreationTemplatesDialog(DialogBase):
 
     def __init__(self, parent: Optional[QWidget] = None):
-        super().__init__(object_name='491d3fc2-1bd1-485c-bb62-ebd27a45dd7e', parent=parent)
+        super().__init__(object_name='491d3fc2-1bd1-485c-bb62-ebd27a45dd7e', parent=parent,
+                         window_title='Edit Template', window_icon='document')
         self.vm = EditCreationTemplatesViewModel(self)
         self.ui = EditCreationTemplatesView(self, self.vm)
 

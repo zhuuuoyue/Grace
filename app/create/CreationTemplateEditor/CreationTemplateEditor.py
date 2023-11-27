@@ -17,7 +17,8 @@ class CreationTemplateEditor(DialogBase):
     def __init__(self, existing_template_names: Set[str],
                  data: Optional[TemplateData] = None,
                  parent: Optional[QWidget] = None):
-        super().__init__(object_name='a3594683-2c1b-4383-91a2-336457f2c251', parent=parent)
+        super().__init__(object_name='a3594683-2c1b-4383-91a2-336457f2c251', parent=parent,
+                         window_title='Template Editor')
         self.vm = CreationTemplateEditorViewModel(existing_template_names, self)
         self.ui = CreationTemplateEditorView(self, self.vm)
 

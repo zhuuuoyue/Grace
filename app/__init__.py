@@ -3,7 +3,7 @@
 from shared.context import Context
 from command import register_command
 
-from ui.cache import initialize_ui_cache
+from ui import initialize_ui_cache
 
 from .create import *
 from .vcs import *
