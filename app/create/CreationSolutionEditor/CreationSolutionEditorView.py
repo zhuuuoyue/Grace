@@ -8,7 +8,6 @@ from ui.utils import create_no_focus_button
 class CreationSolutionEditorView(object):
 
     def __init__(self, dialog: QDialog):
-        dialog.setWindowTitle(r'编辑模板名称')
         dialog.setFixedSize(480, 70)
 
         self.input = QLineEdit()

@@ -4,9 +4,8 @@ from PySide6.QtWidgets import (
     QDialog, QWidget, QToolButton, QListView,
     QHBoxLayout, QVBoxLayout, QSpacerItem, QSizePolicy
 )
-from PySide6.QtGui import QIcon
 
-from ui import utils
+from ui import Icon
 
 from app.create.CreationTemplateViewer import CreationTemplateViewer
 
@@ -17,8 +16,6 @@ class EditCreationTemplatesView(object):
 
     def __init__(self, dialog: QDialog, vm: EditCreationTemplatesViewModel):
         dialog.setMinimumSize(800, 600)
-        dialog.setWindowTitle(r'编辑模板')
-        dialog.setWindowIcon(QIcon(utils.get_image_path('document')))
         dialog.setSizeGripEnabled(True)
 
         self.new_button = self.create_tool_button('add-file', 'New')
@@ -78,6 +75,6 @@ class EditCreationTemplatesView(object):
     @staticmethod
     def create_tool_button(icon: str, tooltip: str) -> QToolButton:
         button = QToolButton()
-        button.setIcon(QIcon(utils.get_image_path(icon)))
+        button.setIcon(Icon(icon))
         button.setToolTip(tooltip)
         return button

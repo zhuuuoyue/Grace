@@ -4,12 +4,10 @@ from typing import Optional, Sequence, Union, List
 
 from PySide6.QtCore import Qt, QObject, Signal, Slot
 from PySide6.QtWidgets import QWidget, QMenuBar, QMenu
-from PySide6.QtGui import QAction, QIcon
+from PySide6.QtGui import QAction
 
 from command import execute_command
-from ui import MainWindowBase
-
-from ui.utils import get_image_path
+from ui import MainWindowBase, Icon
 
 
 class ActionData(object):
@@ -46,14 +44,13 @@ class MainWindow(MainWindowBase):
 
     def __init__(self, menus: Sequence[MenuData], parent: Optional[QWidget] = None,
                  flags: Qt.WindowType = Qt.WindowType.Window):
-        super().__init__(object_name='AE4FD4EA-66E5-421A-B944-410E17E260DF', parent=parent, flags=flags)
+        super().__init__(object_name='AE4FD4EA-66E5-421A-B944-410E17E260DF', parent=parent, flags=flags,
+                         window_icon='cat-eyes', window_title='Grace - Make your programming graceful')
         self.initialize(menus)
 
     def initialize(self, menus: Sequence[MenuData]):
-        self.setWindowTitle('Grace - Make your programming graceful')
         self.setFixedHeight(22)
         self.setMinimumWidth(512)
-        self.setWindowIcon(QIcon(get_image_path('cat-48')))
 
         for menu_data in menus:
             menu = self.get_menu(menu_data.title)
@@ -78,7 +75,7 @@ class MainWindow(MainWindowBase):
         if menu is None:
             return
         action = Action(action_data.command_id, action_data.title, menu)
-        action.setIcon(QIcon(get_image_path(action_data.icon)))
+        action.setIcon(Icon(action_data.icon))
         action.setToolTip(action_data.tooltip)
         action.clicked.connect(self.__on_clicked)
         menu.addAction(action)

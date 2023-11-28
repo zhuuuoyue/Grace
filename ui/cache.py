@@ -9,6 +9,14 @@ from PySide6.QtWidgets import QDialog, QMainWindow
 from PySide6.QtGui import QGuiApplication, QScreen
 
 
+__all__ = [
+    'initialize_ui_cache',
+    'update_dialog_geometry',
+    'update_dialog_geometry_cache',
+    'flush_dialog_geometry_cache'
+]
+
+
 class DialogGeometry(object):
 
     def __init__(self, position: QPoint, size: QSize):
@@ -50,37 +58,6 @@ def dialog_geometry_to_dict(dialog_geometry: DialogGeometry) -> Dict[str, int]:
         _KEY_WIDTH: dialog_geometry.size.width(),
         _KEY_HEIGHT: dialog_geometry.size.height()
     }
-
-
-class DialogGeometryValidator(QObject):
-
-    def __init__(self, parent: Optional[QObject] = None):
-        super().__init__(parent)
-        self.__screens: List[QScreen] = list()
-        self.__rectangles: List[QRect] = list()
-        self.update()
-
-    def validate(self, dialog_geometry: DialogGeometry) -> bool:
-        for screen_rect in self.__rectangles:
-            dialog_rect = QRect(dialog_geometry.position, dialog_geometry.size)
-            intersected = screen_rect.intersected(dialog_rect)
-            if intersected.isEmpty():
-                continue
-            if dialog_rect.top() >= screen_rect.top():
-                return True
-        return False
-
-    def update(self):
-        for screen in self.__screens:
-            screen.availableGeometryChanged.disconnect(self.__on_available_geometry_changed)
-        self.__screens = QGuiApplication.screens()
-        for screen in self.__screens:
-            self.__rectangles.append(screen.availableGeometry())
-            screen.availableGeometryChanged.connect(self.__on_available_geometry_changed)
-
-    @Slot(QRect)
-    def __on_available_geometry_changed(self, geometry: QRect):
-        self.update()
 
 
 class DialogGeometryValidator(QObject):
@@ -190,6 +167,10 @@ def update_dialog_geometry_cache(dialog: [QDialog, QMainWindow], flush: Optional
     get_ui_cache().update_dialog_geometry_cache(dialog)
     if flush:
         get_ui_cache().save()
+
+
+def flush_dialog_geometry_cache():
+    get_ui_cache().save()
 
 
 def update_dialog_geometry(dialog: [QDialog, QMainWindow]):
