@@ -27,6 +27,7 @@ class QuickLauncher(QMainWindow):
         self.ui.keyword_input.key_escape_pressed.connect(self.__on_ui_key_escape_pressed)
         self.ui.keyword_input.focus_lost.connect(self.__on_ui_focus_lost)
         self.ui.candidates.clicked.connect(self.__on_ui_candidate_clicked)
+        self.ui.candidates.pressed.connect(self.__on_ui_candidate_pressed)
         self.ui.candidates.focus_lost.connect(self.__on_ui_focus_lost)
         self.ui.candidates.setModel(self.vm.candidate_model)
 
@@ -69,6 +70,12 @@ class QuickLauncher(QMainWindow):
 
     @Slot(QModelIndex)
     def __on_ui_candidate_clicked(self, current_index: QModelIndex):
+        self.vm.set_current_command_index(current_index)
+        self.hide()
+        self.execute_current_command()
+
+    @Slot(QModelIndex)
+    def __on_ui_candidate_pressed(self, current_index: QModelIndex):
         self.vm.set_current_command_index(current_index)
         self.hide()
         self.execute_current_command()
