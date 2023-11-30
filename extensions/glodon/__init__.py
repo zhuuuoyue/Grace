@@ -10,9 +10,21 @@ from .infer_spatial_relationship import InferSpatialRelationshipCommand
 
 
 def initialize(ctx: Context):
-    register_command('cmd_clean_log_files', CleanLogFilesCommand())
-    register_command('cmd_switch_environment', SwitchEnvironmentCommand())
-    register_command('cmd_infer_spatial_relationship', InferSpatialRelationshipCommand())
+    register_command(
+        command_id='cmd_clean_log_files',
+        command=CleanLogFilesCommand(),
+        name='Clean Log Files'
+    )
+    register_command(
+        command_id='cmd_switch_environment',
+        command=SwitchEnvironmentCommand(),
+        name='Switch Environment'
+    )
+    register_command(
+        command_id='cmd_infer_spatial_relationship',
+        command=InferSpatialRelationshipCommand(),
+        name='Infer Spatial Relationship'
+    )
 
     win = ctx.main_window
     menu = 'GNA'

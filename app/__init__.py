@@ -9,6 +9,8 @@ from .create import *
 from .vcs import *
 from .Application import Application
 from .MainWindow import MainWindow, MenuData, ActionData
+from .quick_launcher import QuickLauncher
+from .system_tray import SystemTray
 
 
 def _register_commands():

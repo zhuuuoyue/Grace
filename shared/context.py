@@ -3,7 +3,7 @@
 import os
 from typing import Union
 
-from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QSystemTrayIcon
 
 
 class Context(object):
@@ -11,6 +11,8 @@ class Context(object):
     def __init__(self, *args, **kwargs):
         self.__app: Union[QApplication, None] = None
         self.__main_window: Union[QMainWindow, None] = None
+        self.__quick_launcher: Union[QWidget, None] = None
+        self.__system_tray: Union[QSystemTrayIcon, None] = None
         self.__root_directory: str = ''
 
         self.root_directory = kwargs.get('root_directory')
@@ -51,6 +53,22 @@ class Context(object):
     def main_window(self, value: QMainWindow):
         if isinstance(value, QMainWindow):
             self.__main_window = value
+
+    @property
+    def quick_launcher(self) -> QWidget:
+        return self.__quick_launcher
+
+    @quick_launcher.setter
+    def quick_launcher(self, widget: QWidget):
+        self.__quick_launcher = widget
+
+    @property
+    def system_tray(self) -> QSystemTrayIcon:
+        return self.__system_tray
+
+    @system_tray.setter
+    def system_tray(self, widget: QSystemTrayIcon):
+        self.__system_tray = widget
 
 
 __context: Union[Context, None] = None

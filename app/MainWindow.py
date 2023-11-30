@@ -4,7 +4,7 @@ from typing import Optional, Sequence, Union, List
 
 from PySide6.QtCore import Qt, QObject, Signal, Slot
 from PySide6.QtWidgets import QWidget, QMenuBar, QMenu
-from PySide6.QtGui import QAction
+from PySide6.QtGui import QAction, QCloseEvent
 
 from command import execute_command
 from ui import MainWindowBase, Icon
@@ -79,6 +79,10 @@ class MainWindow(MainWindowBase):
         action.setToolTip(action_data.tooltip)
         action.clicked.connect(self.__on_clicked)
         menu.addAction(action)
+
+    def closeEvent(self, event: QCloseEvent) -> None:
+        self.hide()
+        event.ignore()
 
     @Slot(str)
     def __on_clicked(self, command_id: str):

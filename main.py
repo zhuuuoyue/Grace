@@ -34,20 +34,25 @@ def load_menus() -> Sequence[app.MenuData]:
 
 if __name__ == '__main__':
     application = app.Application(sys.argv)
+    application.setQuitOnLastWindowClosed(False)
 
     context.initialize(os.getcwd())
     ctx = context.get_context()
+    ctx.app = application
     db.initialize(ctx.data_file_path)
     app.initialize(ctx)
     menus = load_menus()
 
     window = app.MainWindow(menus)
-    window.show()
-
-    ctx.app = application
     ctx.main_window = window
     extensions.initialize(ctx)
 
-    exit_code = application.exec()
+    quick_launcher = app.QuickLauncher()
+    ctx.quick_launcher = quick_launcher
 
+    system_tray = app.SystemTray(window)
+    ctx.system_tray = system_tray
+    system_tray.show()
+
+    exit_code = application.exec()
     sys.exit(exit_code)

@@ -10,6 +10,7 @@ gitpython = "*"
 everytools = "*"
 matplotlib = "*"
 shapely = "*"
+system-hotkey310 = "*"
 
 [dev-packages]
 
