@@ -12,11 +12,13 @@ from .quick_launcher_model import QuickLauncherModel
 
 class QuickLauncherViewModel(WidgetViewModelBase):
 
+    keyword_text_changed = Signal(str)
     current_command_index_changed = Signal(QModelIndex)
 
     def __init__(self, parent: Optional[QObject] = None):
         super().__init__(parent)
         self.__model = QuickLauncherModel(self)
+        self.__keyword_text: str = str()
         self.__candidate_model = QStringListModel(self)
         self.__current_command_index = self.create_index()
 
@@ -27,6 +29,16 @@ class QuickLauncherViewModel(WidgetViewModelBase):
     @property
     def candidate_model(self) -> QStringListModel:
         return self.__candidate_model
+
+    def get_keyword_text(self) -> str:
+        return self.__keyword_text
+
+    def set_keyword_text(self, text: str):
+        if self.keyword_text != text:
+            self.__keyword_text = text
+            self.keyword_text_changed.emit(self.keyword_text)
+
+    keyword_text = Property(str, fget=get_keyword_text, fset=set_keyword_text, notify=keyword_text_changed)
 
     def get_current_command_index(self) -> QModelIndex:
         return self.__current_command_index
@@ -42,6 +54,7 @@ class QuickLauncherViewModel(WidgetViewModelBase):
                                      notify=current_command_index_changed)
 
     def initialize(self):
+        self.model.keyword_changed.connect(self.__on_model_keyword_changed)
         self.model.candidates_changed.connect(self.__on_model_candidates_changed)
         self.model.initialize()
 
@@ -76,6 +89,10 @@ class QuickLauncherViewModel(WidgetViewModelBase):
         new_row_index = row_index + delta
         if 0 <= new_row_index < len(self.model.candidates):
             self.current_command_index = self.create_index(new_row_index)
+
+    @Slot(str)
+    def __on_model_keyword_changed(self, keyword: str):
+        self.keyword_text = keyword
 
     @Slot(type(Sequence[CommandInfo]))
     def __on_model_candidates_changed(self, candidates: Sequence[CommandInfo]):

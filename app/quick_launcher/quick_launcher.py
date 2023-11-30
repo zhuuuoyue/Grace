@@ -14,7 +14,7 @@ from .quick_launcher_view_model import QuickLauncherViewModel
 class QuickLauncher(QMainWindow):
 
     def __init__(self, parent: Optional[QWidget] = None):
-        super().__init__(parent, flags=Qt.WindowType.FramelessWindowHint)
+        super().__init__(parent, flags=(Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint))
         self.ui = QuickLauncherView(self)
         self.vm = QuickLauncherViewModel(self)
         self.initialize()
@@ -30,6 +30,7 @@ class QuickLauncher(QMainWindow):
         self.ui.candidates.focus_lost.connect(self.__on_ui_focus_lost)
         self.ui.candidates.setModel(self.vm.candidate_model)
 
+        self.vm.keyword_text_changed.connect(self.__on_vm_keyword_text_changed)
         self.vm.current_command_index_changed.connect(self.__on_vm_current_command_index_changed)
         self.vm.initialize()
 
@@ -38,12 +39,11 @@ class QuickLauncher(QMainWindow):
         if command_id is not None:
             execute_command(command_id)
 
-    def show_me(self):
+    def show(self):
         self.vm.update_keyword('')
-        self.show()
-
-    def hide_me(self):
-        self.hide()
+        super().show()
+        self.setWindowState(Qt.WindowState.WindowActive)
+        self.ui.keyword_input.setFocus()
 
     @Slot(str)
     def __on_ui_keyword_changed(self, text: str):
@@ -60,22 +60,28 @@ class QuickLauncher(QMainWindow):
 
     @Slot()
     def __on_ui_key_enter_pressed(self):
-        self.hide_me()
+        self.hide()
         self.execute_current_command()
 
     @Slot()
     def __on_ui_key_escape_pressed(self):
-        self.hide_me()
+        self.hide()
 
     @Slot(QModelIndex)
     def __on_ui_candidate_clicked(self, current_index: QModelIndex):
         self.vm.set_current_command_index(current_index)
-        self.hide_me()
+        self.hide()
         self.execute_current_command()
 
     @Slot()
     def __on_ui_focus_lost(self):
-        self.hide_me()
+        self.hide()
+
+    @Slot(str)
+    def __on_vm_keyword_text_changed(self, keyword: str):
+        current_keyword = self.ui.keyword_input.text()
+        if current_keyword != keyword:
+            self.ui.keyword_input.setText(keyword)
 
     @Slot(QModelIndex)
     def __on_vm_current_command_index_changed(self, current_command_index: QModelIndex):
