@@ -3,7 +3,7 @@
 import os
 from typing import Optional, Sequence, List
 
-from shared import get_searcher, SearcherType, ISearcher
+from shared import get_searcher, SearcherType, Searcher
 
 
 def detect_software_packages(
@@ -16,7 +16,7 @@ def detect_software_packages(
         keywords.append('AppGstr.exe')
     if len(keywords) == 0:
         return list()
-    searcher: ISearcher = get_searcher(SearcherType.LOCAL_SEARCHER)
+    searcher: Searcher = get_searcher(SearcherType.LOCAL_SEARCHER)
     search_result = searcher.search_exe('|'.join(keywords))
     result: List[str] = list()
     for search_result_item in search_result:
