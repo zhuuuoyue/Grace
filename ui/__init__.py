@@ -2,4 +2,4 @@
 
 from .base import *
 from .cache import *
-from .icon import *
+from .components import *

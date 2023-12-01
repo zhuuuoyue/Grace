@@ -8,7 +8,7 @@ from PySide6.QtWidgets import QWidget, QDialog
 from PySide6.QtGui import QCloseEvent
 
 from ui.cache import update_dialog_geometry, update_dialog_geometry_cache
-from ui.icon import Icon
+from ui.components import Icon
 
 
 class DialogBase(QDialog):

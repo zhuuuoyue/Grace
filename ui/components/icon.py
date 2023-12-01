@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
+__all__ = ['Icon']
+
 from typing import Optional
 
 from PySide6.QtGui import QIcon
 
-from .utils import get_image_path
-
-
-__all__ = ['Icon']
+from ui.utils import get_image_path
 
 
 class Icon(QIcon):
