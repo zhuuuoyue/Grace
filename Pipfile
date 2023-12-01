@@ -11,6 +11,7 @@ everytools = "*"
 matplotlib = "*"
 shapely = "*"
 system-hotkey310 = "*"
+pypiwin32 = "*"
 
 [dev-packages]
 
