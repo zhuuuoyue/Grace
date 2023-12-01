@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+__all__ = ['Environment', 'environment_to_string', 'infer_environment']
+
 import os
 from typing import Dict, Union
 from enum import IntEnum, auto
