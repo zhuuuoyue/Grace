@@ -4,7 +4,7 @@ from command import register_command
 from shared.context import Context
 from app import ActionData, MainWindow
 
-from .CleanLogFiles import CleanLogFilesCommand
+from .clean_log_files import CleanLogFilesCommand
 from .switch_environment import SwitchEnvironmentCommand
 from .infer_spatial_relationship import InferSpatialRelationshipCommand
 

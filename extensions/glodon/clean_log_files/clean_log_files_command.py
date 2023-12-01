@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+__all__ = ['CleanLogFilesCommand']
+
 from command import CommandBase
 
-from .CleanLogFilesDialog import CleanLogFilesDialog
+from .clean_log_files_dialog import CleanLogFilesDialog
 
 
 class CleanLogFilesCommand(CommandBase):

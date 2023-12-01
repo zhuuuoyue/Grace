@@ -1,21 +1,13 @@
 # -*- coding: utf-8 -*-
 
+__all__ = ['CleanLogFilesViewModel']
+
 import os
 from typing import List, Optional
 
 from PySide6.QtCore import QObject, Signal, Slot
 
-
-class DirectoryInformation(object):
-
-    def __init__(self, dir_path: str, checked: bool):
-        self.path: str = dir_path
-        self.checked: bool = checked
-
-    def __eq__(self, other) -> bool:
-        if not isinstance(other, DirectoryInformation):
-            return False
-        return self.path == other.path and self.checked == other.checked
+from .directory_information import DirectoryInformation
 
 
 class CleanLogFilesViewModel(QObject):

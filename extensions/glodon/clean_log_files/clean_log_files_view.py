@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+__all__ = ['CleanLogFilesView']
+
 from typing import List
 
 from PySide6.QtCore import Qt, QSignalBlocker
@@ -7,7 +9,8 @@ from PySide6.QtWidgets import QDialog, QComboBox, QListWidget, QListWidgetItem
 
 from ui.utils import create_no_focus_button, create_row_title, create_row_layout, create_column_layout
 
-from .CleanLogFilesViewModel import CleanLogFilesViewModel, DirectoryInformation
+from .clean_log_files_view_model import CleanLogFilesViewModel
+from .directory_information import DirectoryInformation
 
 
 class CleanLogFilesView(object):

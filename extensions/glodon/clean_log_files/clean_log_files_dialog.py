@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+__all__ = ['CleanLogFilesDialog']
+
 from typing import Optional, List
 
 from PySide6.QtCore import Qt, Slot
@@ -8,8 +10,8 @@ from PySide6.QtWidgets import QWidget, QListWidgetItem
 from shared.utils import clean_directories
 from ui.base import DialogBase
 
-from .CleanLogFilesViewModel import CleanLogFilesViewModel
-from .CleanLogFilesView import CleanLogFilesView
+from .clean_log_files_view_model import CleanLogFilesViewModel
+from .clean_log_files_view import CleanLogFilesView
 
 
 class CleanLogFilesDialog(DialogBase):
