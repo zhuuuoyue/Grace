@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+__all__ = ['Context']
+
 import os
 from typing import Union
 
@@ -69,16 +71,3 @@ class Context(object):
     @system_tray.setter
     def system_tray(self, widget: QSystemTrayIcon):
         self.__system_tray = widget
-
-
-__context: Union[Context, None] = None
-
-
-def initialize(root_directory: str):
-    global __context
-    if __context is None:
-        __context = Context(root_directory=root_directory)
-
-
-def get_context() -> Context:
-    return __context

@@ -36,7 +36,7 @@ if __name__ == '__main__':
     application = app.Application(sys.argv)
     application.setQuitOnLastWindowClosed(False)
 
-    context.initialize(os.getcwd())
+    context.initialize_context(os.getcwd())
     ctx = context.get_context()
     ctx.app = application
     db.initialize(ctx.data_file_path)
