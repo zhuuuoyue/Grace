@@ -7,8 +7,8 @@ from ui import initialize_ui_cache
 
 from .create import *
 from .vcs import *
-from .Application import Application
-from .MainWindow import MainWindow, MenuData, ActionData
+from .application import Application
+from .main_window import MainWindow, MenuData, ActionData
 from .quick_launcher import QuickLauncher
 from .system_tray import SystemTray
 

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from command import ICommand
+from command import CommandBase
 
 from .EditRepositoriesDialog import EditRepositoriesDialog
 
 
-class EditRepositoriesCommand(ICommand):
+class EditRepositoriesCommand(CommandBase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

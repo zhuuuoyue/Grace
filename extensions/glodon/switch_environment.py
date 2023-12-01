@@ -7,7 +7,7 @@ from typing import Any, List, Optional, Union, Tuple
 from PySide6.QtCore import QObject, Signal, Slot, Property, Qt
 from PySide6.QtWidgets import QWidget, QDialog, QComboBox, QPushButton, QSpacerItem, QSizePolicy
 
-from command import ICommand
+from command import CommandBase
 from ui import DialogBase, WidgetViewModelBase, WidgetModelBase, Icon
 from ui.utils import create_row_title, create_row_layout, create_column_layout
 
@@ -410,7 +410,7 @@ class SwitchEnvironmentDialog(DialogBase):
             self.vm.request_updating_environment_options()
 
 
-class SwitchEnvironmentCommand(ICommand):
+class SwitchEnvironmentCommand(CommandBase):
 
     def exec(self, *args, **kwargs):
         task = SwitchEnvironmentTask()

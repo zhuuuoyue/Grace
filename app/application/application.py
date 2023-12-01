@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+__all__ = ['Application']
+
 from typing import Sequence
 
 from ui import ApplicationBase

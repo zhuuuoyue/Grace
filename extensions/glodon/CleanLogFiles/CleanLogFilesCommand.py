@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from command import ICommand
+from command import CommandBase
 
 from .CleanLogFilesDialog import CleanLogFilesDialog
 
 
-class CleanLogFilesCommand(ICommand):
+class CleanLogFilesCommand(CommandBase):
 
     def __init__(self):
         pass

@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 
 
-class ICommand(ABC):
+class CommandBase(ABC):
 
     @abstractmethod
     def exec(self, *args, **kwargs):

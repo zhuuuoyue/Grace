@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from command import ICommand
+from command import CommandBase
 
 from app.create.EditCreationTemplatesDialog import EditCreationTemplatesDialog
 
 
-class EditTemplateCommand(ICommand):
+class EditTemplateCommand(CommandBase):
 
     def __init__(self):
         super().__init__()

@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
     QLayout, QHBoxLayout, QVBoxLayout, QSpacerItem, QSizePolicy
 )
 
-from command import ICommand
+from command import CommandBase
 from tasks.create import TemplateData, EditTemplateTasks, extract_parameters, complete_template
 
 from ui import DialogBase, WidgetViewModelBase, WidgetModelBase
@@ -389,7 +389,7 @@ class CreateUsingTemplateDialog(DialogBase):
         clipboard.setText(content)
 
 
-class CreateUsingTemplateCommand(ICommand):
+class CreateUsingTemplateCommand(CommandBase):
 
     def exec(self, *args, **kwargs):
         dialog = CreateUsingTemplateDialog()

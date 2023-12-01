@@ -1,43 +1,19 @@
 # -*- coding: utf-8 -*-
 
+__all__ = ['MainWindow']
+
 from typing import Optional, Sequence, Union, List
 
-from PySide6.QtCore import Qt, QObject, Signal, Slot
+from PySide6.QtCore import Qt, QObject, Slot
 from PySide6.QtWidgets import QWidget, QMenuBar, QMenu
-from PySide6.QtGui import QAction, QCloseEvent
+from PySide6.QtGui import QCloseEvent
 
 from command import execute_command
 from ui import MainWindowBase, Icon
 
-
-class ActionData(object):
-
-    def __init__(self, command_id: str, title: str, icon: Optional[str] = None, tooltip: Optional[str] = None):
-        self.command_id: str = command_id
-        self.title: str = title
-        self.icon: str = icon
-        self.tooltip: str = tooltip
-
-
-class MenuData(object):
-
-    def __init__(self, title: str, actions: Sequence[ActionData]):
-        self.title: str = title
-        self.actions: Sequence[ActionData] = actions
-
-
-class Action(QAction):
-
-    clicked: Signal = Signal(str)
-
-    def __init__(self, command_id: str, text: str, parent: Optional[QObject] = None):
-        super().__init__(text=text, parent=parent)
-        self.__command_id = command_id
-        self.triggered.connect(self.__on_triggered)
-
-    @Slot()
-    def __on_triggered(self):
-        self.clicked.emit(self.__command_id)
+from .action_data import ActionData
+from .menu_data import MenuData
+from .action import Action
 
 
 class MainWindow(MainWindowBase):

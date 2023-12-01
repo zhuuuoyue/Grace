@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from command import ICommand
+from command import CommandBase
 
 from .EditCreationSolutionsDialog import EditCreationSolutionsDialog
 
 
-class EditCreationSolutionsCommand(ICommand):
+class EditCreationSolutionsCommand(CommandBase):
 
     def __init__(self):
         super().__init__()

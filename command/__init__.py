@@ -2,8 +2,8 @@
 
 from typing import Optional, Sequence, Tuple
 
-from .ICommand import ICommand
-from .CommandManager import CommandManager
+from .command_base import CommandBase
+from .command_manager import CommandManager
 
 
 __command_manager: CommandManager = CommandManager()
@@ -13,7 +13,7 @@ def get_command_manager() -> CommandManager:
     return __command_manager
 
 
-def register_command(command_id: str, command: ICommand, name: Optional[str] = None):
+def register_command(command_id: str, command: CommandBase, name: Optional[str] = None):
     get_command_manager().register_command(command_id, command, name)
 
 
