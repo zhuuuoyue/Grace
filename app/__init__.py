@@ -8,9 +8,9 @@ from ui import initialize_ui_cache
 from .create import *
 from .vcs import *
 from .application import Application
-from .main_window import MainWindow, MenuData, ActionData
+from .main_window import MainWindow
 from .quick_launcher import QuickLauncher
-from .system_tray import SystemTray
+from .system_tray_icon import SystemTrayIcon
 
 
 def _register_commands():

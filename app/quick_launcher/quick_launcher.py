@@ -1,20 +1,24 @@
 # -*- coding: utf-8 -*-
 
+__all__ = ['QuickLauncher']
+
 from typing import Optional
 
 from PySide6.QtCore import Qt, Slot, QModelIndex
-from PySide6.QtWidgets import QWidget, QMainWindow
+from PySide6.QtWidgets import QWidget
 
 from command import execute_command
+
+from ui import QuickLauncherBase
 
 from .quick_launcher_view import QuickLauncherView
 from .quick_launcher_view_model import QuickLauncherViewModel
 
 
-class QuickLauncher(QMainWindow):
+class QuickLauncher(QuickLauncherBase):
 
     def __init__(self, parent: Optional[QWidget] = None):
-        super().__init__(parent, flags=(Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint))
+        super().__init__(parent)
         self.ui = QuickLauncherView(self)
         self.vm = QuickLauncherViewModel(self)
         self.initialize()

@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 
+__all__ = ['SystemTrayIcon']
+
 from typing import Optional, Tuple
 
 from PySide6.QtCore import Slot
-from PySide6.QtWidgets import QSystemTrayIcon, QWidget
+from PySide6.QtWidgets import QWidget, QSystemTrayIcon
 
-from ui import Icon
+from ui import Icon, SystemTrayIconBase
 from shared import get_context
 
-from .system_tray_view import SystemTrayView
+from .system_tray_icon_view import SystemTrayView
 from app.hotkey import GlobalHotKey, HOTKEY_SHOW_QUICK_LAUNCHER
 
 
-class SystemTray(QSystemTrayIcon):
+class SystemTrayIcon(SystemTrayIconBase):
 
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(icon=Icon('pixel-cat'), parent=parent)

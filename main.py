@@ -2,34 +2,12 @@
 
 import os
 import sys
-import json
-from typing import Sequence, List
 
 from shared import context
 import db
 import extensions
 import app
-
-
-def load_menus() -> Sequence[app.MenuData]:
-    result: List[app.MenuData] = list()
-    with open('ui.json') as fp:
-        data = json.load(fp)
-        modules = data['modules']
-        for module in modules:
-            commands = module['commands']
-            actions: List[app.ActionData] = list()
-            for command in commands:
-                action = app.ActionData(
-                    command_id=command['command_id'],
-                    title=command['title'],
-                    icon=command['icon'],
-                    tooltip=command['tooltip']
-                )
-                actions.append(action)
-            menu = app.MenuData(module['title'], actions)
-            result.append(menu)
-    return result
+import ui
 
 
 if __name__ == '__main__':
@@ -41,7 +19,7 @@ if __name__ == '__main__':
     ctx.app = application
     db.initialize(ctx.data_file_path)
     app.initialize(ctx)
-    menus = load_menus()
+    menus = ui.load_menus(os.path.join(ctx.root_directory, 'ui.json'))
 
     window = app.MainWindow(menus)
     ctx.main_window = window
@@ -50,7 +28,7 @@ if __name__ == '__main__':
     quick_launcher = app.QuickLauncher()
     ctx.quick_launcher = quick_launcher
 
-    system_tray = app.SystemTray(window)
+    system_tray = app.SystemTrayIcon(window)
     ctx.system_tray = system_tray
     system_tray.show()
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-__all__ = ['initialize_context', 'get_context']
+__all__ = ['initialize_context', 'get_context', 'Context']
 
 from typing import Union
 

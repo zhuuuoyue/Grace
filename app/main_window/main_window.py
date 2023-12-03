@@ -2,18 +2,13 @@
 
 __all__ = ['MainWindow']
 
-from typing import Optional, Sequence, Union, List
+from typing import Optional, Sequence
 
-from PySide6.QtCore import Qt, QObject, Slot
-from PySide6.QtWidgets import QWidget, QMenuBar, QMenu
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QCloseEvent
 
-from command import execute_command
-from ui import MainWindowBase, Icon
-
-from .action_data import ActionData
-from .menu_data import MenuData
-from .action import Action
+from ui import MainWindowBase, MenuData
 
 
 class MainWindow(MainWindowBase):
@@ -27,39 +22,8 @@ class MainWindow(MainWindowBase):
     def initialize(self, menus: Sequence[MenuData]):
         self.setFixedHeight(22)
         self.setMinimumWidth(512)
-
-        for menu_data in menus:
-            menu = self.get_menu(menu_data.title)
-            if menu is None:
-                continue
-            for action_data in menu_data.actions:
-                self.add_action(menu_data.title, action_data)
-
-    def get_menu(self, text: str) -> Union[QMenu, None]:
-        if not isinstance(text, str) or text == str():
-            return None
-        menu_bar: QMenuBar = self.menuBar()
-        menus: List[QObject] = menu_bar.children()
-        for menu in menus:
-            if isinstance(menu, QMenu) and menu.title() == text:
-                return menu
-        menu = menu_bar.addMenu(text)
-        return menu
-
-    def add_action(self, menu: str, action_data: ActionData):
-        menu = self.get_menu(menu)
-        if menu is None:
-            return
-        action = Action(action_data.command_id, action_data.title, menu)
-        action.setIcon(Icon(action_data.icon))
-        action.setToolTip(action_data.tooltip)
-        action.clicked.connect(self.__on_clicked)
-        menu.addAction(action)
+        self.add_menus(menus)
 
     def closeEvent(self, event: QCloseEvent) -> None:
         self.hide()
         event.ignore()
-
-    @Slot(str)
-    def __on_clicked(self, command_id: str):
-        execute_command(command_id)
