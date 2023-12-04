@@ -7,7 +7,7 @@ from importlib import import_module
 
 from PySide6.QtWidgets import QTableWidget, QWidget, QVBoxLayout, QTableWidgetItem
 
-from shared.context import Context
+from shared import Context, get_context
 from ui import DialogBase
 
 
@@ -60,7 +60,8 @@ class LoadingResultDialog(DialogBase):
             self.__table.setItem(row_index, 3, QTableWidgetItem(err_info))
 
 
-def initialize(ctx: Context):
+def load():
+    ctx: Context = get_context()
     # loading
     loading_result: List[LoadingResult] = list()
     children = os.listdir(__path__[0])
@@ -99,3 +100,7 @@ def initialize(ctx: Context):
     if len(errors) != 0:
         table = LoadingResultDialog(errors, ctx.main_window)
         table.show()
+
+
+def initialize():
+    pass

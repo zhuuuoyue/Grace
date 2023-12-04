@@ -11,3 +11,4 @@ class Application(ApplicationBase):
 
     def __init__(self, args: Sequence[str]):
         super().__init__(args)
+        self.setQuitOnLastWindowClosed(False)

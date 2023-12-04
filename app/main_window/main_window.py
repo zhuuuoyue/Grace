@@ -2,21 +2,24 @@
 
 __all__ = ['MainWindow']
 
+import os
 from typing import Optional, Sequence
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QCloseEvent
 
-from ui import MainWindowBase, MenuData
+from ui import MainWindowBase, MenuData, load_menus
+from shared import get_context
 
 
 class MainWindow(MainWindowBase):
 
-    def __init__(self, menus: Sequence[MenuData], parent: Optional[QWidget] = None,
-                 flags: Qt.WindowType = Qt.WindowType.Window):
+    def __init__(self, parent: Optional[QWidget] = None, flags: Qt.WindowType = Qt.WindowType.Window):
         super().__init__(object_name='AE4FD4EA-66E5-421A-B944-410E17E260DF', parent=parent, flags=flags,
                          window_icon='cat-eyes', window_title='Grace - Make your programming graceful')
+        ui_config_filename = os.path.join(get_context().root_directory, 'ui.json')
+        menus = load_menus(ui_config_filename)
         self.initialize(menus)
 
     def initialize(self, menus: Sequence[MenuData]):

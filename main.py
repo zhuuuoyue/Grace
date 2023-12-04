@@ -2,35 +2,56 @@
 
 import os
 import sys
+from typing import NoReturn
 
 from shared import context
 import db
 import extensions
 import app
-import ui
+from events import get_event_handler_manager, ApplicationWillInit
+
+
+class InitializeContext(ApplicationWillInit):
+
+    def __init__(self):
+        super().__init__()
+
+    def exec(self, *args, **kwargs) -> NoReturn:
+        context.initialize_context(root_directory=kwargs.get('root_dir'))
 
 
 if __name__ == '__main__':
+    InitializeContext()
+    app.initialize()
+    db.initialize()
+    extensions.initialize()
+    event_handler_manager = get_event_handler_manager()
+
+    event_handler_manager.application_will_init(root_dir=os.getcwd())
     application = app.Application(sys.argv)
-    application.setQuitOnLastWindowClosed(False)
+    event_handler_manager.application_did_init(app_instance=application)
 
-    context.initialize_context(os.getcwd())
-    ctx = context.get_context()
-    ctx.app = application
-    db.initialize(ctx.data_file_path)
-    app.initialize(ctx)
-    menus = ui.load_menus(os.path.join(ctx.root_directory, 'ui.json'))
+    event_handler_manager.main_window_will_init()
+    window = app.MainWindow()
+    event_handler_manager.main_window_did_init(main_window_instance=window)
 
-    window = app.MainWindow(menus)
-    ctx.main_window = window
-    extensions.initialize(ctx)
+    event_handler_manager.extensions_will_load()
+    extensions.load()
+    event_handler_manager.extensions_did_load()
 
+    event_handler_manager.quick_launcher_will_init()
     quick_launcher = app.QuickLauncher()
-    ctx.quick_launcher = quick_launcher
+    event_handler_manager.quick_launcher_did_init(quick_launcher_instance=quick_launcher)
 
-    system_tray = app.SystemTrayIcon(window)
-    ctx.system_tray = system_tray
-    system_tray.show()
+    event_handler_manager.system_tray_icon_will_init()
+    system_tray_icon = app.SystemTrayIcon(window)
+    event_handler_manager.system_tray_icon_did_init(system_tray_icon_instance=system_tray_icon)
 
+    event_handler_manager.system_tray_icon_will_show()
+    system_tray_icon.show()
+    event_handler_manager.system_tray_icon_did_show()
+
+    event_handler_manager.application_will_exec()
     exit_code = application.exec()
+    event_handler_manager.application_did_exec()
     sys.exit(exit_code)

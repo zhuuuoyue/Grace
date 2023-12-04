@@ -1,16 +1,23 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import Union
+from typing import Union, NoReturn
 
 from sqlalchemy import create_engine, Engine
 from sqlalchemy.orm import Session
+from events import ApplicationWillInit
+from shared import get_context
 
-from db.TableBase import TableBase
-from .create import EntEncoding, EntCreationTemplate, EntCreationDocument, EntCreationSolution, RelCreationSolutionAndDocument
+from .TableBase import TableBase
+from .create import (EntEncoding, EntCreationTemplate, EntCreationDocument, EntCreationSolution,
+                     RelCreationSolutionAndDocument)
 
 
 __engine: Union[Engine, None] = None
+
+
+def get_engine() -> Union[Engine, None]:
+    return __engine
 
 
 def initialize_encoding_table(session: Session):
@@ -21,16 +28,22 @@ def initialize_encoding_table(session: Session):
     session.commit()
 
 
-def initialize(db_path: str):
-    global __engine
-    __engine = create_engine(f'sqlite:///{db_path}', echo_pool=True)
+class InitializeDBFile(ApplicationWillInit):
 
-    if not os.path.isfile(db_path):
-        TableBase.metadata.create_all(__engine)
+    def __init__(self):
+        super().__init__()
 
-        with Session(__engine) as session:
-            initialize_encoding_table(session)
+    def exec(self, *args, **kwargs) -> NoReturn:
+        db_path = get_context().data_file_path
+        global __engine
+        __engine = create_engine(f'sqlite:///{db_path}', echo_pool=True)
+
+        if not os.path.isfile(db_path):
+            TableBase.metadata.create_all(__engine)
+
+            with Session(__engine) as session:
+                initialize_encoding_table(session)
 
 
-def get_engine() -> Union[Engine, None]:
-    return __engine
+def initialize():
+    InitializeDBFile()

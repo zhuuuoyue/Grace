@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QIcon
 
-from shared import context
+from shared import context  # for resolving circle dependency
 
 
 def get_image_path(image_name: str) -> str:
@@ -31,7 +31,9 @@ def create_no_focus_tool_button(icon: str, tooltip: Optional[str] = None) -> QTo
     return button
 
 
-def add_layout_children(layout: Union[QHBoxLayout, QVBoxLayout], children: Sequence[Union[QWidget, QSpacerItem, QLayout]]):
+def add_layout_children(
+        layout: Union[QHBoxLayout, QVBoxLayout],
+        children: Sequence[Union[QWidget, QSpacerItem, QLayout]]):
     for item in children:
         if isinstance(item, QWidget):
             layout.addWidget(item)
