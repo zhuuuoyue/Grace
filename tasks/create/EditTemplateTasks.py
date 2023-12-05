@@ -104,7 +104,7 @@ def get_template_content_using_name(name: str) -> Union[str, None]:
 
 def get_templates() -> Sequence[TemplateData]:
     with Session(get_engine()) as session:
-        templates = session.scalars(select(EntCreationTemplate))
+        templates = session.query(EntCreationTemplate).order_by(EntCreationTemplate.name).all()
         result = list()
         for template in templates:
             result.append(TemplateData(id_value=template.id, name=template.name, content=template.content))

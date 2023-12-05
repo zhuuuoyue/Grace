@@ -13,11 +13,11 @@ from .create import (EntEncoding, EntCreationTemplate, EntCreationDocument, EntC
                      RelCreationSolutionAndDocument)
 
 
-__engine: Union[Engine, None] = None
+_engine_instance: Union[Engine, None] = None
 
 
 def get_engine() -> Union[Engine, None]:
-    return __engine
+    return _engine_instance
 
 
 def initialize_encoding_table(session: Session):
@@ -35,13 +35,13 @@ class InitializeDBFile(ApplicationWillInit):
 
     def exec(self, *args, **kwargs) -> NoReturn:
         db_path = get_context().data_file_path
-        global __engine
-        __engine = create_engine(f'sqlite:///{db_path}', echo_pool=True)
+        global _engine_instance
+        _engine_instance = create_engine(f'sqlite:///{db_path}', echo_pool=True)
 
         if not os.path.isfile(db_path):
-            TableBase.metadata.create_all(__engine)
+            TableBase.metadata.create_all(_engine_instance)
 
-            with Session(__engine) as session:
+            with Session(_engine_instance) as session:
                 initialize_encoding_table(session)
 
 
