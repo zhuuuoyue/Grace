@@ -16,6 +16,7 @@ class Context(object):
         self.__quick_launcher: Union[QuickLauncherBase, None] = None
         self.__system_tray: Union[SystemTrayIconBase, None] = None
         self.__root_directory: str = ''
+        self.__debug_mode: bool = False
 
         self.root_directory = kwargs.get('root_directory')
         self.app = kwargs.get('main_window')
@@ -29,6 +30,14 @@ class Context(object):
     def root_directory(self, value: str):
         if isinstance(value, str):
             self.__root_directory = value
+
+    @property
+    def debug_mode(self) -> bool:
+        return self.__debug_mode
+
+    @debug_mode.setter
+    def debug_mode(self, value: bool):
+        self.__debug_mode = value
 
     @property
     def image_directory(self) -> str:

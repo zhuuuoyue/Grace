@@ -17,7 +17,9 @@ class InitializeContext(ApplicationWillInit):
         super().__init__()
 
     def exec(self, *args, **kwargs) -> NoReturn:
-        context.initialize_context(root_directory=kwargs.get('root_dir'))
+        root_dir = kwargs.get('root_dir')
+        context.initialize_context(root_directory=root_dir)
+        context.get_context().debug_mode = os.path.isfile(os.path.join(root_dir, 'debug'))
 
 
 if __name__ == '__main__':
@@ -25,6 +27,7 @@ if __name__ == '__main__':
     app.initialize()
     db.initialize()
     extensions.initialize()
+
     event_handler_manager = get_event_handler_manager()
 
     event_handler_manager.application_will_init(root_dir=os.getcwd())
@@ -34,6 +37,10 @@ if __name__ == '__main__':
     event_handler_manager.main_window_will_init()
     window = app.MainWindow()
     event_handler_manager.main_window_did_init(main_window_instance=window)
+
+    ctx = context.get_context()
+    if ctx.debug_mode:
+        window.show()
 
     event_handler_manager.extensions_will_load()
     extensions.load()

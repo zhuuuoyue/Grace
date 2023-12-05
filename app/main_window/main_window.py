@@ -28,5 +28,9 @@ class MainWindow(MainWindowBase):
         self.add_menus(menus)
 
     def closeEvent(self, event: QCloseEvent) -> None:
-        self.hide()
-        event.ignore()
+        if get_context().debug_mode:
+            super().closeEvent(event)
+            get_context().app.quit()
+        else:
+            self.hide()
+            event.ignore()
