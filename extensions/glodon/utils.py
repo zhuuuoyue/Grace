@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 from typing import Optional, Sequence, List
 
 from shared import get_searcher, SearcherType, Searcher
@@ -18,7 +17,5 @@ def detect_software_packages(
         return list()
     searcher: Searcher = get_searcher(SearcherType.LOCAL_SEARCHER)
     search_result = searcher.search_exe('|'.join(keywords))
-    result: List[str] = list()
-    for search_result_item in search_result:
-        result.append(os.path.dirname(search_result_item))
-    return result
+    search_result.remove_items_in_recycle_bin().order_by_path()
+    return search_result.retrieve_paths()

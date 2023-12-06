@@ -3,7 +3,8 @@
 __all__ = ['Searcher']
 
 from abc import ABC, abstractmethod
-from typing import Sequence
+
+from .search_result import SearchResult
 
 
 class Searcher(ABC):
@@ -18,43 +19,43 @@ class Searcher(ABC):
                match_case: bool = False,
                match_whole_word: bool = False,
                use_regex: bool = False
-               ) -> Sequence[str]:
+               ) -> SearchResult:
         pass
 
     @abstractmethod
-    def search_exe(self, keyword: str) -> Sequence[str]:
+    def search_exe(self, keyword: str) -> SearchResult:
         pass
 
     @abstractmethod
-    def search_doc(self, keyword: str) -> Sequence[str]:
+    def search_doc(self, keyword: str) -> SearchResult:
         pass
 
     @abstractmethod
-    def search_ext(self, ext: str, keyword: str) -> Sequence[str]:
+    def search_ext(self, ext: str, keyword: str) -> SearchResult:
         pass
 
     @abstractmethod
-    def search_pic(self, keyword: str) -> Sequence[str]:
+    def search_pic(self, keyword: str) -> SearchResult:
         pass
 
     @abstractmethod
-    def search_audio(self, keyword: str) -> Sequence[str]:
+    def search_audio(self, keyword: str) -> SearchResult:
         pass
 
     @abstractmethod
-    def search_folder(self, keyword: str) -> Sequence[str]:
+    def search_folder(self, keyword: str) -> SearchResult:
         pass
 
     @abstractmethod
-    def search_in_located(self, path: str, keyword: str) -> Sequence[str]:
+    def search_in_located(self, path: str, keyword: str) -> SearchResult:
         pass
 
     @abstractmethod
-    def search_video(self, keyword: str) -> Sequence[str]:
+    def search_video(self, keyword: str) -> SearchResult:
         pass
 
     @abstractmethod
-    def search_zip(self, keyword: str) -> Sequence[str]:
+    def search_zip(self, keyword: str) -> SearchResult:
         pass
 
 
